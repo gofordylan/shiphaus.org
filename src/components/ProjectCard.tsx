@@ -17,7 +17,7 @@ export function ProjectCard({ project, index = 0 }: ProjectCardProps) {
       transition={{ duration: 0.4, delay: index * 0.05 }}
       className="masonry-item"
     >
-      <div className="card p-5 group">
+      <div className="card p-5 group h-full flex flex-col">
         {/* Builder info */}
         <div className="flex items-center gap-3 mb-4">
           <img
@@ -34,7 +34,7 @@ export function ProjectCard({ project, index = 0 }: ProjectCardProps) {
         <h3 className="text-lg font-semibold mb-2 group-hover:text-[var(--accent)] transition-colors">
           {project.title}
         </h3>
-        <p className="text-[var(--text-secondary)] text-sm font-body leading-relaxed mb-4">
+        <p className="text-[var(--text-secondary)] text-sm font-body leading-relaxed mb-4 flex-grow">
           {project.description}
         </p>
 

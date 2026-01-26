@@ -174,27 +174,37 @@ body::before {
   transform-origin: left;
 }
 
-/* Masonry grid for projects */
+/* Grid for projects */
 .masonry-grid {
-  column-count: 1;
-  column-gap: 1.5rem;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
 }
 
 @media (min-width: 640px) {
   .masonry-grid {
-    column-count: 2;
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
 @media (min-width: 1024px) {
   .masonry-grid {
-    column-count: 3;
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 
 .masonry-item {
-  break-inside: avoid;
-  margin-bottom: 1.5rem;
+  height: 100%;
+}
+
+.masonry-item > .card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.masonry-item > .card > p {
+  flex-grow: 1;
 }
 
 /* Scroll reveal animation */
