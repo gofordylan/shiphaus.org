@@ -29,9 +29,9 @@ export default function ProjectsPage() {
             <ArrowLeft className="w-4 h-4" />
             Back
           </Link>
-          <h1 className="text-3xl md:text-4xl font-bold mb-4">All Projects</h1>
+          <h1 className="text-3xl md:text-4xl font-bold mb-4">Everything Shipped</h1>
           <p className="text-[var(--text-secondary)] font-body text-lg max-w-2xl">
-            Every project shipped by the Shiphaus community. Real products built in a single day.
+            Every product. Built in a day. Live right now.
           </p>
         </motion.div>
 

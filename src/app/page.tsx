@@ -1,13 +1,12 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { ArrowRight, Rocket, Users, Zap, Globe } from 'lucide-react';
+import { ArrowRight, Rocket } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ChapterCard } from '@/components/ChapterCard';
 import { ProjectCard } from '@/components/ProjectCard';
-import { TestimonialCard } from '@/components/TestimonialCard';
-import { chapters, projects, testimonials } from '@/lib/data';
+import { chapters, projects, events, testimonials } from '@/lib/data';
 function HeroSection() {
   return (
     <section className="hero-pattern relative overflow-hidden">
@@ -37,7 +36,7 @@ function HeroSection() {
               transition={{ duration: 0.6 }}
               className="text-5xl md:text-6xl font-bold tracking-tight mb-6 leading-[1.1]"
             >
-              Ship Your Side Project <span className="text-[var(--accent)]">Today</span>
+              Start at 10. Ship by <span className="text-[var(--accent)]">5</span>.
             </motion.h1>
 
             <motion.p
@@ -46,7 +45,7 @@ function HeroSection() {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="text-xl text-[var(--text-secondary)] font-body leading-relaxed mb-8 max-w-xl"
             >
-              Stop dreaming. Start building. Industry experts and motivated builders have your back.
+              Builders helping builders ship.
             </motion.p>
 
             <motion.div
@@ -55,30 +54,34 @@ function HeroSection() {
               transition={{ duration: 0.6, delay: 0.3 }}
               className="flex flex-wrap gap-4"
             >
-              <Link href="#chapters" className="btn-primary inline-flex items-center gap-2">
-                Join the Next Event
-                <ArrowRight className="w-4 h-4" />
-              </Link>
+              <div className="flex flex-col gap-1">
+                <span className="text-2xl font-bold">Next Event: NYC February</span>
+                <span className="text-[var(--text-secondary)] font-body">
+                  Interested? Reach out to{' '}
+                  <a href="https://x.com/AlexSlobodnik" target="_blank" rel="noopener noreferrer" className="text-[var(--accent)] hover:underline">@AlexSlobodnik</a>
+                </span>
+              </div>
             </motion.div>
 
             {/* Stats */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.6, delay: 0.5 }}
-              className="flex flex-wrap gap-8 mt-12 pt-8 border-t border-[var(--border-subtle)]"
-            >
+            <div className="flex flex-wrap gap-10 mt-12 pt-8 border-t border-[var(--border-strong)]">
               {[
-                { label: 'Projects Shipped', value: '20' },
-                { label: 'Active Chapters', value: '4' },
-                { label: 'Build Events', value: '2' },
+                { label: 'Projects Shipped', value: String(projects.length) },
+                { label: 'Chapters', value: String(chapters.length) },
+                { label: 'Build Events', value: String(events.length) },
               ].map((stat, i) => (
-                <div key={i}>
-                  <p className="text-3xl font-bold">{stat.value}</p>
-                  <p className="text-[var(--text-muted)] text-sm">{stat.label}</p>
-                </div>
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: 0.6 + i * 0.1 }}
+                  className="pl-4 border-l-2 border-[var(--accent)]"
+                >
+                  <p className="text-3xl font-bold font-body">{stat.value}</p>
+                  <p className="text-[var(--text-muted)] text-xs tracking-widest uppercase mt-1">{stat.label}</p>
+                </motion.div>
               ))}
-            </motion.div>
+            </div>
           </div>
 
           {/* Hero Photo */}
@@ -102,7 +105,7 @@ function HeroSection() {
               </div>
               <div className="absolute -bottom-3 -left-3 bg-white rounded-xl p-3 shadow-lg border border-[var(--border-subtle)]">
                 <p className="text-sm font-semibold">Zero to One Day</p>
-                <p className="text-xs text-[var(--text-muted)]">14 builders, 14 projects</p>
+                <p className="text-xs text-[var(--text-muted)]">14 builders. 14 products. One day.</p>
               </div>
             </div>
           </motion.div>
@@ -115,19 +118,19 @@ function HeroSection() {
 function ValuePropsSection() {
   const props = [
     {
-      icon: Zap,
-      title: 'Ship in 8 Hours',
-      description: 'AI tools let you build what used to take weeks. The deadline isn\'t a constraint — it\'s your unfair advantage.',
+      icon: '/icons/speed-icon.png',
+      title: 'Weeks of Work. One Day.',
+      description: 'AI handles the grunt work. The deadline handles your excuses. The room handles the rest.',
     },
     {
-      icon: Users,
-      title: 'Accountability That Works',
-      description: 'A room full of builders, heads down, shipping. No Slack. No meetings. Just focused work and real deadlines.',
+      icon: '/icons/together-icon.png',
+      title: 'Built Together',
+      description: 'Nobody ships alone here. Engineers help designers. Founders help first-timers. Everyone leaves with something live.',
     },
     {
-      icon: Globe,
-      title: 'Growing Global',
-      description: 'Started in NYC. Expanding soon. Same energy everywhere: less talk, more build.',
+      icon: '/icons/ships-icon.png',
+      title: 'Everyone Ships. No One Quits.',
+      description: 'First event: 14 builders, 14 live products. That\'s what Shiphaus is.',
     },
   ];
 
@@ -144,8 +147,8 @@ function ValuePropsSection() {
               transition={{ duration: 0.5, delay: index * 0.1 }}
               className="text-center md:text-left"
             >
-              <div className="inline-flex p-3 rounded-xl bg-white border border-[var(--border-subtle)] mb-4">
-                <prop.icon className="w-6 h-6 text-[var(--accent)]" />
+              <div className="inline-flex p-3 mb-5 rounded-lg bg-[var(--accent-soft)]">
+                <img src={prop.icon} alt="" className="w-14 h-14 object-contain" style={{ imageRendering: 'pixelated' }} />
               </div>
               <h3 className="text-lg font-semibold mb-2">{prop.title}</h3>
               <p className="text-[var(--text-secondary)] font-body">{prop.description}</p>
@@ -231,24 +234,78 @@ function ProjectsSection() {
 }
 
 function TestimonialsSection() {
+  const hero = testimonials[0];
+  const supporting = testimonials.slice(1);
+
   return (
-    <section className="py-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="py-20 md:py-28 bg-[var(--text-primary)] text-white relative overflow-hidden">
+      {/* Subtle radial glow behind the quote */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-[var(--accent)]/5 rounded-full blur-3xl" />
+      </div>
+
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+        {/* Section label */}
+        <motion.p
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          className="text-white/40 text-sm font-semibold tracking-widest uppercase mb-16 text-center"
+        >
+          Straight From the Room
+        </motion.p>
+
+        {/* Hero quote */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-12"
+          transition={{ duration: 0.7 }}
+          className="text-center mb-16"
         >
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Don&apos;t Take Our Word For It</h2>
-          <p className="text-[var(--text-secondary)] font-body text-lg max-w-xl mx-auto">
-            Hear from builders who&apos;ve shipped at Shiphaus.
-          </p>
+          <div className="relative inline-block">
+            <span className="absolute -top-8 -left-4 md:-top-10 md:-left-8 font-body text-[6rem] md:text-[8rem] leading-none text-[var(--accent)] opacity-25 select-none">&ldquo;</span>
+            <blockquote className="font-body italic text-2xl sm:text-3xl md:text-4xl lg:text-5xl leading-snug md:leading-tight text-white/95 max-w-4xl">
+              {hero.quote}
+            </blockquote>
+          </div>
+          <div className="flex items-center justify-center gap-3 mt-10">
+            <img
+              src={hero.avatar}
+              alt={hero.author}
+              className="w-11 h-11 rounded-full border-2 border-white/20 object-cover"
+            />
+            <div className="text-left">
+              <p className="font-semibold text-sm text-white/90">{hero.author}</p>
+              <p className="text-white/40 text-sm">{hero.role}</p>
+            </div>
+          </div>
         </motion.div>
 
-        <div className="grid md:grid-cols-3 gap-6">
-          {testimonials.map((testimonial, index) => (
-            <TestimonialCard key={testimonial.id} testimonial={testimonial} index={index} />
+        {/* Divider */}
+        <div className="w-12 h-px bg-white/10 mx-auto mb-12" />
+
+        {/* Supporting quotes */}
+        <div className="flex flex-col md:flex-row justify-center gap-8 md:gap-16">
+          {supporting.map((t, i) => (
+            <motion.div
+              key={t.id}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.2 + i * 0.1 }}
+              className="flex items-center gap-3"
+            >
+              <img
+                src={t.avatar}
+                alt={t.author}
+                className="w-9 h-9 rounded-full border border-white/10 object-cover shrink-0"
+              />
+              <p className="text-white/60 font-body italic text-base">
+                &ldquo;{t.quote}&rdquo;{' '}
+                <span className="text-white/30 not-italic text-sm">&mdash; {t.author}</span>
+              </p>
+            </motion.div>
           ))}
         </div>
       </div>
@@ -258,7 +315,7 @@ function TestimonialsSection() {
 
 function CTASection() {
   return (
-    <section className="py-20 bg-[var(--text-primary)] text-white">
+    <section className="py-20 bg-[#111111] text-white">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -266,25 +323,18 @@ function CTASection() {
           viewport={{ once: true }}
         >
           <Rocket className="w-12 h-12 mx-auto mb-6 text-[var(--accent)]" />
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Your Next Project is One Day Away</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">Next Event: NYC February</h2>
           <p className="text-white/70 font-body text-lg mb-8 max-w-xl mx-auto">
-            Stop sitting on that idea. Join the next Shiphaus and launch it.
+            Details coming soon. Want to start a chapter in your city?
           </p>
-          <div className="flex flex-wrap justify-center gap-4">
-            <Link
-              href="#chapters"
-              className="bg-[var(--accent)] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[var(--accent-hover)] transition-colors inline-flex items-center gap-2"
-            >
-              Join the Next Event
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-            <a
-              href="mailto:hello@shiphaus.org"
-              className="bg-white/10 text-white px-6 py-3 rounded-lg font-semibold hover:bg-white/20 transition-colors"
-            >
-              Start a Chapter
-            </a>
-          </div>
+          <a
+            href="https://x.com/gofordylan"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-white/10 text-white px-6 py-3 rounded-lg font-semibold hover:bg-white/20 transition-colors"
+          >
+            Start a Chapter
+          </a>
         </motion.div>
       </div>
     </section>

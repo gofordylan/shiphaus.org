@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { DoodlePortal } from './doodles/DoodlePortal';
 import { doodleMap } from './doodles';
+import { chapterColorMap } from '@/lib/data';
 
 interface NavCityLinkProps {
   href: string;
@@ -88,15 +89,7 @@ export function NavCityLink({ href, chapterId, chapterColor, children, onClick }
     };
   }, []);
 
-  // Color mapping for priming effect
-  const colorMap: Record<string, string> = {
-    'new-york': 'var(--chapter-ny)',
-    'chicago': 'var(--chapter-chicago)',
-    'boulder': 'var(--chapter-boulder)',
-    'malaysia': 'var(--chapter-malaysia)',
-  };
-
-  const primedColor = colorMap[chapterId] || 'var(--accent)';
+  const primedColor = chapterColorMap[chapterColor] || 'var(--accent)';
 
   return (
     <>

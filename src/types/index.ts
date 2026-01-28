@@ -14,8 +14,6 @@ export interface Chapter {
   country: string;
   lead: ChapterLead;
   color: string;
-  projectCount: number;
-  eventCount: number;
 }
 
 export interface Event {
@@ -26,7 +24,6 @@ export interface Event {
   location: string;
   builderCount: number;
   projectCount: number;
-  photos: string[];
 }
 
 export interface Project {

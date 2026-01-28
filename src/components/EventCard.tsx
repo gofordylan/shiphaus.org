@@ -23,22 +23,6 @@ export function EventCard({ event, index = 0 }: EventCardProps) {
       transition={{ duration: 0.5, delay: index * 0.1 }}
       className="card overflow-hidden"
     >
-      {/* Photo carousel preview */}
-      {event.photos.length > 0 && (
-        <div className="relative h-48 overflow-hidden">
-          <img
-            src={event.photos[0]}
-            alt={event.name}
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-          />
-          {event.photos.length > 1 && (
-            <div className="absolute bottom-3 right-3 bg-black/60 backdrop-blur-sm text-white text-xs px-2 py-1 rounded-full">
-              +{event.photos.length - 1} photos
-            </div>
-          )}
-        </div>
-      )}
-
       <div className="p-5">
         <h3 className="text-lg font-semibold mb-3">{event.name}</h3>
 

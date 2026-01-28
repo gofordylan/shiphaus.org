@@ -22,8 +22,6 @@ export const chapters: Chapter[] = [
       isFounder: true,
     },
     color: 'chapter-ny',
-    projectCount: 20,
-    eventCount: 2,
   },
   {
     id: 'chicago',
@@ -37,8 +35,6 @@ export const chapters: Chapter[] = [
       github: 'https://github.com/kirillpolevoy',
     },
     color: 'chapter-chicago',
-    projectCount: 0,
-    eventCount: 0,
   },
   {
     id: 'boulder',
@@ -53,8 +49,6 @@ export const chapters: Chapter[] = [
       website: 'https://dawsonbotsford.com',
     },
     color: 'chapter-boulder',
-    projectCount: 0,
-    eventCount: 0,
   },
   {
     id: 'malaysia',
@@ -70,8 +64,6 @@ export const chapters: Chapter[] = [
       isFounder: true,
     },
     color: 'chapter-malaysia',
-    projectCount: 0,
-    eventCount: 0,
   },
 ];
 
@@ -84,7 +76,6 @@ export const events: Event[] = [
     location: 'New York',
     builderCount: 14,
     projectCount: 14,
-    photos: [],
   },
   {
     id: 'ny-shiphaus-jan-2026',
@@ -94,7 +85,6 @@ export const events: Event[] = [
     location: 'Upstate New York',
     builderCount: 6,
     projectCount: 6,
-    photos: [],
   },
 ];
 

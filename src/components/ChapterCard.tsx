@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ArrowRight, MapPin, Users, Calendar } from 'lucide-react';
 import { Chapter } from '@/types';
-import { chapterColorMap } from '@/lib/data';
+import { chapterColorMap, getChapterEvents, getChapterProjects } from '@/lib/data';
 
 interface ChapterCardProps {
   chapter: Chapter;
@@ -13,7 +13,9 @@ interface ChapterCardProps {
 
 export function ChapterCard({ chapter, index = 0 }: ChapterCardProps) {
   const accentColor = chapterColorMap[chapter.color] || '#FF6B35';
-  const isComingSoon = chapter.eventCount === 0;
+  const chapterEvents = getChapterEvents(chapter.id);
+  const chapterProjects = getChapterProjects(chapter.id);
+  const isComingSoon = chapterEvents.length === 0;
 
   const CardContent = (
     <div className={`card p-6 relative overflow-hidden ${isComingSoon ? 'opacity-75' : ''}`}>
@@ -68,17 +70,17 @@ export function ChapterCard({ chapter, index = 0 }: ChapterCardProps) {
       {/* Stats or Coming Soon message */}
       {isComingSoon ? (
         <p className="text-sm text-[var(--text-muted)] italic">
-          First event coming soon!
+          First event coming soon.
         </p>
       ) : (
         <div className="flex items-center gap-6">
           <div className="flex items-center gap-2 text-sm text-[var(--text-secondary)]">
             <Users className="w-4 h-4" style={{ color: accentColor }} />
-            <span><strong>{chapter.projectCount}</strong> projects</span>
+            <span><strong>{chapterProjects.length}</strong> projects</span>
           </div>
           <div className="flex items-center gap-2 text-sm text-[var(--text-secondary)]">
             <Calendar className="w-4 h-4" style={{ color: accentColor }} />
-            <span><strong>{chapter.eventCount}</strong> events</span>
+            <span><strong>{chapterEvents.length}</strong> events</span>
           </div>
         </div>
       )}

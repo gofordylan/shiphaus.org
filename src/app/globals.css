@@ -199,19 +199,3 @@ body::before {
   color: var(--text-primary);
 }
 
-/* Testimonial quote decoration */
-.testimonial-quote {
-  position: relative;
-}
-
-.testimonial-quote::before {
-  content: '"';
-  position: absolute;
-  top: -0.5rem;
-  left: -0.5rem;
-  font-family: 'Newsreader', Georgia, serif;
-  font-size: 4rem;
-  color: var(--accent);
-  opacity: 0.15;
-  line-height: 1;
-}

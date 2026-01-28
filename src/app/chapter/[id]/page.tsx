@@ -2,20 +2,13 @@
 
 import { useParams } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Globe, Calendar, Users, Layers, Camera, Github } from 'lucide-react';
+import { ArrowLeft, Globe, Calendar, MapPin, Users, Layers, Github } from 'lucide-react';
 import Link from 'next/link';
 import { getChapter, getChapterEvents, getChapterProjects, getChapterTestimonials, chapterColorMap } from '@/lib/data';
 import { ProjectCard } from '@/components/ProjectCard';
 import { EventCard } from '@/components/EventCard';
 import { TestimonialCard } from '@/components/TestimonialCard';
-
-function XIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-    </svg>
-  );
-}
+import { XIcon } from '@/components/XIcon';
 
 export default function ChapterPage() {
   const params = useParams();
@@ -183,31 +176,6 @@ export default function ChapterPage() {
               </motion.div>
             </motion.div>
 
-            {/* Featured Event Photo */}
-            {events.length > 0 && events[0].photos.length > 0 && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-                className="relative"
-              >
-                <div className="rounded-2xl overflow-hidden shadow-xl">
-                  <img
-                    src={events[0].photos[0]}
-                    alt={`${chapter.city} event`}
-                    className="w-full h-80 object-cover"
-                  />
-                </div>
-                <div
-                  className="absolute -bottom-4 -right-4 bg-white rounded-xl p-4 shadow-lg border border-[var(--border-subtle)]"
-                >
-                  <div className="flex items-center gap-2 text-sm">
-                    <Camera className="w-4 h-4" style={{ color: accentColor }} />
-                    <span className="font-medium">{events[0].name}</span>
-                  </div>
-                </div>
-              </motion.div>
-            )}
           </div>
         </div>
       </section>
@@ -222,7 +190,7 @@ export default function ChapterPage() {
               viewport={{ once: true }}
               className="mb-10"
             >
-              <h2 className="text-2xl md:text-3xl font-bold mb-2">Past Events</h2>
+              <h2 className="text-2xl md:text-3xl font-bold mb-2">Build Days</h2>
               <p className="text-[var(--text-secondary)] font-body">
                 Build days hosted by the {chapter.city} chapter
               </p>
@@ -232,6 +200,32 @@ export default function ChapterPage() {
               {events.map((event, index) => (
                 <EventCard key={event.id} event={event} index={index} />
               ))}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: events.length * 0.1 }}
+                className="rounded-2xl border-2 border-dashed border-[var(--border-strong)] overflow-hidden"
+              >
+                <div className="p-5">
+                  <h3 className="text-lg font-semibold text-[var(--text-muted)] mb-3">Shiphaus NYC #3</h3>
+
+                  <div className="space-y-2 text-sm">
+                    <div className="flex items-center gap-2 text-[var(--text-muted)]">
+                      <Calendar className="w-4 h-4 opacity-40" />
+                      <span>February 2026</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-[var(--text-muted)]">
+                      <MapPin className="w-4 h-4 opacity-40" />
+                      <span>New York</span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-4 mt-4 pt-4 border-t border-dashed border-[var(--border-subtle)]">
+                    <span className="text-sm font-body italic text-[var(--text-muted)]">Details coming soon</span>
+                  </div>
+                </div>
+              </motion.div>
             </div>
           </div>
         </section>
@@ -247,9 +241,9 @@ export default function ChapterPage() {
               viewport={{ once: true }}
               className="mb-10"
             >
-              <h2 className="text-2xl md:text-3xl font-bold mb-2">Projects from {chapter.city}</h2>
+              <h2 className="text-2xl md:text-3xl font-bold mb-2">Shipped in {chapter.city}</h2>
               <p className="text-[var(--text-secondary)] font-body">
-                Built by community members at {chapter.city} events
+                Every project shipped at a {chapter.city} build day.
               </p>
             </motion.div>
 
@@ -272,9 +266,9 @@ export default function ChapterPage() {
               viewport={{ once: true }}
               className="mb-10"
             >
-              <h2 className="text-2xl md:text-3xl font-bold mb-2">What People Say</h2>
+              <h2 className="text-2xl md:text-3xl font-bold mb-2">From the Builders</h2>
               <p className="text-[var(--text-secondary)] font-body">
-                Builders share their Shiphaus experience
+                What they said after shipping.
               </p>
             </motion.div>
 
@@ -287,43 +281,6 @@ export default function ChapterPage() {
         </section>
       )}
 
-      {/* Photo Gallery Section */}
-      {events.some(e => e.photos.length > 0) && (
-        <section className="py-16">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="mb-10"
-            >
-              <h2 className="text-2xl md:text-3xl font-bold mb-2">Photos</h2>
-              <p className="text-[var(--text-secondary)] font-body">
-                Moments from {chapter.city} build days
-              </p>
-            </motion.div>
-
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {events.flatMap(event => event.photos).slice(0, 8).map((photo, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.4, delay: index * 0.05 }}
-                  className="aspect-square rounded-xl overflow-hidden group cursor-pointer"
-                >
-                  <img
-                    src={photo}
-                    alt={`${chapter.city} event photo`}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                  />
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
     </div>
   );
 }
