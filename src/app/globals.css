@@ -1,4 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Newsreader:ital,wght@0,400;0,500;1,400&display=swap');
 @import "tailwindcss";
 
 :root {
@@ -28,7 +27,6 @@
   --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
   --shadow-md: 0 4px 12px rgba(0,0,0,0.06);
   --shadow-lg: 0 8px 30px rgba(0,0,0,0.08);
-  --shadow-xl: 0 20px 50px rgba(0,0,0,0.12);
 }
 
 @theme inline {
@@ -121,22 +119,6 @@ body::before {
   transform: translateY(0);
 }
 
-.btn-secondary {
-  background: transparent;
-  color: var(--text-primary);
-  font-weight: 500;
-  padding: 0.875rem 1.75rem;
-  border-radius: 0.5rem;
-  border: 1px solid var(--border-strong);
-  transition: all 0.2s ease;
-  cursor: pointer;
-}
-
-.btn-secondary:hover {
-  background: var(--bg-secondary);
-  border-color: var(--text-primary);
-}
-
 /* Card styles */
 .card {
   background: white;
@@ -148,30 +130,6 @@ body::before {
 .card:hover {
   box-shadow: var(--shadow-lg);
   transform: translateY(-2px);
-}
-
-/* Link underline animation */
-.link-underline {
-  position: relative;
-  text-decoration: none;
-}
-
-.link-underline::after {
-  content: '';
-  position: absolute;
-  bottom: -2px;
-  left: 0;
-  width: 100%;
-  height: 1px;
-  background: currentColor;
-  transform: scaleX(0);
-  transform-origin: right;
-  transition: transform 0.3s ease;
-}
-
-.link-underline:hover::after {
-  transform: scaleX(1);
-  transform-origin: left;
 }
 
 /* Grid for projects */
@@ -219,36 +177,6 @@ body::before {
   }
 }
 
-.animate-fade-in-up {
-  animation: fadeInUp 0.6s ease forwards;
-}
-
-/* Stagger children animations */
-.stagger-children > * {
-  opacity: 0;
-  animation: fadeInUp 0.5s ease forwards;
-}
-
-.stagger-children > *:nth-child(1) { animation-delay: 0s; }
-.stagger-children > *:nth-child(2) { animation-delay: 0.1s; }
-.stagger-children > *:nth-child(3) { animation-delay: 0.2s; }
-.stagger-children > *:nth-child(4) { animation-delay: 0.3s; }
-.stagger-children > *:nth-child(5) { animation-delay: 0.4s; }
-.stagger-children > *:nth-child(6) { animation-delay: 0.5s; }
-
-/* Chapter color utilities */
-.chapter-ny { --chapter-color: var(--chapter-ny); }
-.chapter-chicago { --chapter-color: var(--chapter-chicago); }
-.chapter-boulder { --chapter-color: var(--chapter-boulder); }
-.chapter-malaysia { --chapter-color: var(--chapter-malaysia); }
-
-/* Gradient text */
-.gradient-text {
-  background: linear-gradient(135deg, var(--text-primary) 0%, var(--text-secondary) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
 
 /* Hero pattern */
 .hero-pattern {
@@ -269,28 +197,6 @@ body::before {
 ::selection {
   background: var(--accent-soft);
   color: var(--text-primary);
-}
-
-/* Input styles */
-.input {
-  width: 100%;
-  padding: 0.875rem 1rem;
-  border: 1px solid var(--border-strong);
-  border-radius: 0.5rem;
-  background: white;
-  font-family: inherit;
-  font-size: 1rem;
-  transition: all 0.2s ease;
-}
-
-.input:focus {
-  outline: none;
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px var(--accent-soft);
-}
-
-.input::placeholder {
-  color: var(--text-muted);
 }
 
 /* Testimonial quote decoration */

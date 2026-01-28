@@ -40,9 +40,6 @@ export function Navbar() {
                 </NavCityLink>
               ))}
             </div>
-
-            <div className="flex items-center gap-3">
-            </div>
           </div>
 
           {/* Mobile menu button */}
@@ -75,7 +72,6 @@ export function Navbar() {
                   {chapter.city}
                 </Link>
               ))}
-              <hr className="border-[var(--border-subtle)]" />
             </div>
           </motion.div>
         )}

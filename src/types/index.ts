@@ -3,13 +3,11 @@ export interface ChapterLead {
   handle: string;
   avatar: string;
   x?: string;
-  linkedin?: string;
   website?: string;
 }
 
 export interface Chapter {
   id: string;
-  name: string;
   city: string;
   country: string;
   lead: ChapterLead;

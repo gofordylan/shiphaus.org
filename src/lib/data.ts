@@ -1,9 +1,15 @@
 import { Chapter, Event, Project, Testimonial } from '@/types';
 
+export const chapterColorMap: Record<string, string> = {
+  'chapter-ny': '#2D5BFF',
+  'chapter-chicago': '#8B5CF6',
+  'chapter-boulder': '#10B981',
+  'chapter-malaysia': '#F59E0B',
+};
+
 export const chapters: Chapter[] = [
   {
     id: 'new-york',
-    name: 'New York',
     city: 'New York',
     country: 'USA',
     lead: {
@@ -18,7 +24,6 @@ export const chapters: Chapter[] = [
   },
   {
     id: 'chicago',
-    name: 'Chicago',
     city: 'Chicago',
     country: 'USA',
     lead: {
@@ -33,7 +38,6 @@ export const chapters: Chapter[] = [
   },
   {
     id: 'boulder',
-    name: 'Boulder',
     city: 'Boulder',
     country: 'USA',
     lead: {
@@ -49,7 +53,6 @@ export const chapters: Chapter[] = [
   },
   {
     id: 'malaysia',
-    name: 'Malaysia',
     city: 'Forest City',
     country: 'Malaysia',
     lead: {
@@ -423,6 +426,3 @@ export function getChapterTestimonials(chapterId: string): Testimonial[] {
   return testimonials.filter(t => t.chapterId === chapterId || !t.chapterId);
 }
 
-export function getAllProjects(): Project[] {
-  return projects;
-}

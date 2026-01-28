@@ -7,7 +7,7 @@ import Image from 'next/image';
 import { ChapterCard } from '@/components/ChapterCard';
 import { ProjectCard } from '@/components/ProjectCard';
 import { TestimonialCard } from '@/components/TestimonialCard';
-import { chapters, getAllProjects, testimonials } from '@/lib/data';
+import { chapters, projects, testimonials } from '@/lib/data';
 function HeroSection() {
   return (
     <section className="hero-pattern relative overflow-hidden">
@@ -184,7 +184,7 @@ function ChaptersSection() {
 }
 
 function ProjectsSection() {
-  const projects = getAllProjects().slice(0, 6);
+  const featured = projects.slice(0, 6);
 
   return (
     <section className="py-20 bg-[var(--bg-secondary)]">
@@ -211,7 +211,7 @@ function ProjectsSection() {
         </motion.div>
 
         <div className="masonry-grid">
-          {projects.map((project, index) => (
+          {featured.map((project, index) => (
             <ProjectCard key={project.id} project={project} index={index} />
           ))}
         </div>

@@ -5,15 +5,14 @@ import { motion } from 'framer-motion';
 import { ArrowLeft, Filter } from 'lucide-react';
 import Link from 'next/link';
 import { ProjectCard } from '@/components/ProjectCard';
-import { getAllProjects, chapters } from '@/lib/data';
+import { projects, chapters } from '@/lib/data';
 
 export default function ProjectsPage() {
   const [selectedChapter, setSelectedChapter] = useState<string>('all');
-  const allProjects = getAllProjects();
 
   const filteredProjects = selectedChapter === 'all'
-    ? allProjects
-    : allProjects.filter(p => p.chapterId === selectedChapter);
+    ? projects
+    : projects.filter(p => p.chapterId === selectedChapter);
 
   return (
     <div className="min-h-screen py-12 px-4">

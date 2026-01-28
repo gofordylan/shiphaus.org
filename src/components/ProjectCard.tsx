@@ -40,15 +40,17 @@ export function ProjectCard({ project, index = 0 }: ProjectCardProps) {
 
         {/* Links */}
         <div className="flex items-center gap-3 pt-3 border-t border-[var(--border-subtle)]">
-          <a
-            href={project.deployedUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 text-sm font-medium text-[var(--accent)] hover:text-[var(--accent-hover)] transition-colors"
-          >
-            <ExternalLink className="w-4 h-4" />
-            View Live
-          </a>
+          {project.deployedUrl && (
+            <a
+              href={project.deployedUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 text-sm font-medium text-[var(--accent)] hover:text-[var(--accent-hover)] transition-colors"
+            >
+              <ExternalLink className="w-4 h-4" />
+              View Live
+            </a>
+          )}
           {project.githubUrl && (
             <a
               href={project.githubUrl}

@@ -4,7 +4,10 @@ import { useParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Globe, Calendar, MapPin, Users, Layers, Camera } from 'lucide-react';
 import Link from 'next/link';
-import { getChapter, getChapterEvents, getChapterProjects, getChapterTestimonials } from '@/lib/data';
+import { getChapter, getChapterEvents, getChapterProjects, getChapterTestimonials, chapterColorMap } from '@/lib/data';
+import { ProjectCard } from '@/components/ProjectCard';
+import { EventCard } from '@/components/EventCard';
+import { TestimonialCard } from '@/components/TestimonialCard';
 
 function XIcon({ className }: { className?: string }) {
   return (
@@ -13,16 +16,6 @@ function XIcon({ className }: { className?: string }) {
     </svg>
   );
 }
-import { ProjectCard } from '@/components/ProjectCard';
-import { EventCard } from '@/components/EventCard';
-import { TestimonialCard } from '@/components/TestimonialCard';
-
-const colorMap: Record<string, string> = {
-  'chapter-ny': '#2D5BFF',
-  'chapter-chicago': '#8B5CF6',
-  'chapter-boulder': '#10B981',
-  'chapter-malaysia': '#F59E0B',
-};
 
 export default function ChapterPage() {
   const params = useParams();
@@ -45,7 +38,7 @@ export default function ChapterPage() {
     );
   }
 
-  const accentColor = colorMap[chapter.color] || '#FF6B35';
+  const accentColor = chapterColorMap[chapter.color] || '#FF6B35';
 
   return (
     <div className="min-h-screen">

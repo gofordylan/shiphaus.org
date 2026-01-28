@@ -4,21 +4,15 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ArrowRight, MapPin, Users, Calendar } from 'lucide-react';
 import { Chapter } from '@/types';
+import { chapterColorMap } from '@/lib/data';
 
 interface ChapterCardProps {
   chapter: Chapter;
   index?: number;
 }
 
-const colorMap: Record<string, string> = {
-  'chapter-ny': '#2D5BFF',
-  'chapter-chicago': '#8B5CF6',
-  'chapter-boulder': '#10B981',
-  'chapter-malaysia': '#F59E0B',
-};
-
 export function ChapterCard({ chapter, index = 0 }: ChapterCardProps) {
-  const accentColor = colorMap[chapter.color] || '#FF6B35';
+  const accentColor = chapterColorMap[chapter.color] || '#FF6B35';
   const isComingSoon = chapter.eventCount === 0;
 
   const CardContent = (
