@@ -2,16 +2,14 @@
 
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Rocket, User, LogOut } from 'lucide-react';
+import { Menu, X, Rocket } from 'lucide-react';
 import { useState } from 'react';
-import { useAuth } from '@/lib/auth-context';
 import { chapters } from '@/lib/data';
 import { NavCityLink } from './NavCityLink';
 import { TaxiDoodle, WindDoodle, FlatironsDoodle, NetworkDoodle } from './doodles';
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
-  const { user, loading, signIn, signOut } = useAuth();
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-[var(--bg-primary)]/80 backdrop-blur-md border-b border-[var(--border-subtle)]">
@@ -44,39 +42,6 @@ export function Navbar() {
             </div>
 
             <div className="flex items-center gap-3">
-              {!loading && (
-                <>
-                  {user ? (
-                    <div className="flex items-center gap-3">
-                      <Link href="/submit" className="btn-primary text-sm py-2 px-4">
-                        Submit Project
-                      </Link>
-                      <div className="flex items-center gap-2">
-                        <img
-                          src={user.user_metadata?.avatar_url || ''}
-                          alt={user.user_metadata?.full_name || 'User'}
-                          className="w-8 h-8 rounded-full border border-[var(--border-subtle)]"
-                        />
-                        <button
-                          onClick={signOut}
-                          className="p-2 text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors cursor-pointer"
-                          title="Sign out"
-                        >
-                          <LogOut className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </div>
-                  ) : (
-                    <button
-                      onClick={signIn}
-                      className="btn-secondary text-sm py-2 px-4 flex items-center gap-2"
-                    >
-                      <User className="w-4 h-4" />
-                      Sign in
-                    </button>
-                  )}
-                </>
-              )}
             </div>
           </div>
 
@@ -111,42 +76,6 @@ export function Navbar() {
                 </Link>
               ))}
               <hr className="border-[var(--border-subtle)]" />
-              {!loading && (
-                <>
-                  {user ? (
-                    <div className="space-y-3">
-                      <Link
-                        href="/submit"
-                        onClick={() => setIsOpen(false)}
-                        className="block btn-primary text-center text-sm"
-                      >
-                        Submit Project
-                      </Link>
-                      <button
-                        onClick={() => {
-                          signOut();
-                          setIsOpen(false);
-                        }}
-                        className="w-full text-left py-2 text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors flex items-center gap-2 cursor-pointer"
-                      >
-                        <LogOut className="w-4 h-4" />
-                        Sign out
-                      </button>
-                    </div>
-                  ) : (
-                    <button
-                      onClick={() => {
-                        signIn();
-                        setIsOpen(false);
-                      }}
-                      className="w-full btn-secondary text-sm flex items-center justify-center gap-2"
-                    >
-                      <User className="w-4 h-4" />
-                      Sign in
-                    </button>
-                  )}
-                </>
-              )}
             </div>
           </motion.div>
         )}

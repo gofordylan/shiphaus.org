@@ -3,6 +3,8 @@
 import { useParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Globe, Calendar, MapPin, Users, Layers, Camera } from 'lucide-react';
+import Link from 'next/link';
+import { getChapter, getChapterEvents, getChapterProjects, getChapterTestimonials } from '@/lib/data';
 
 function XIcon({ className }: { className?: string }) {
   return (
@@ -11,8 +13,6 @@ function XIcon({ className }: { className?: string }) {
     </svg>
   );
 }
-import Link from 'next/link';
-import { getChapter, getChapterEvents, getChapterProjects, getChapterTestimonials, chapters } from '@/lib/data';
 import { ProjectCard } from '@/components/ProjectCard';
 import { EventCard } from '@/components/EventCard';
 import { TestimonialCard } from '@/components/TestimonialCard';

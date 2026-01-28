@@ -8,11 +8,7 @@ import { ChapterCard } from '@/components/ChapterCard';
 import { ProjectCard } from '@/components/ProjectCard';
 import { TestimonialCard } from '@/components/TestimonialCard';
 import { chapters, getAllProjects, testimonials } from '@/lib/data';
-import { useAuth } from '@/lib/auth-context';
-
 function HeroSection() {
-  const { user, signIn } = useAuth();
-
   return (
     <section className="hero-pattern relative overflow-hidden">
       {/* Decorative elements */}
@@ -63,15 +59,6 @@ function HeroSection() {
                 Join the Next Event
                 <ArrowRight className="w-4 h-4" />
               </Link>
-              {user ? (
-                <Link href="/submit" className="btn-secondary">
-                  Submit Project
-                </Link>
-              ) : (
-                <button onClick={signIn} className="btn-secondary">
-                  Sign In
-                </button>
-              )}
             </motion.div>
 
             {/* Stats */}
