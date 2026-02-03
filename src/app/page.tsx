@@ -6,6 +6,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ChapterCard } from '@/components/ChapterCard';
 import { ProjectCard } from '@/components/ProjectCard';
+import { EmailCapture } from '@/components/EmailCapture';
 import { chapters, projects, events, testimonials } from '@/lib/data';
 function HeroSection() {
   return (
@@ -347,6 +348,7 @@ export default function Home() {
       <ChaptersSection />
       <ProjectsSection />
       <TestimonialsSection />
+      <EmailCapture />
       <CTASection />
     </>
   );
