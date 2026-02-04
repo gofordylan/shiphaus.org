@@ -42,3 +42,6 @@ next-env.d.ts
 
 # Email subscribers
 data/subscribers.json
+
+# Worktrees
+.worktrees
