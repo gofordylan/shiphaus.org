@@ -1,72 +1,49 @@
-# Vercel KV Setup Instructions
+# Upstash Redis Setup Instructions
 
-## Once you have Vercel access:
+## Option 1: Direct Upstash Setup
 
-### 1. Create KV Database in Vercel
-
-Go to: Vercel Dashboard → Your Project → Storage → Create Database → KV (Upstash Redis)
-
-Or: Vercel Dashboard → Integrations → Add Upstash Redis
+### 1. Create Database at Upstash
+Go to: https://console.upstash.com/ → Create Database → Choose region
 
 ### 2. Copy Environment Variables
+From the Upstash console, copy:
+- `UPSTASH_REDIS_REST_URL` → use as `KV_REST_API_URL`
+- `UPSTASH_REDIS_REST_TOKEN` → use as `KV_REST_API_TOKEN`
 
-Vercel will automatically add these to your project:
-- `KV_URL`
-- `KV_REST_API_URL`
-- `KV_REST_API_TOKEN`
-- `KV_REST_API_READ_ONLY_TOKEN`
-
-### 3. For Local Development
-
-Copy the env vars from Vercel to `.env.local`:
-
-```bash
-# In Vercel Dashboard:
-# Settings → Environment Variables → Copy each one
-
-# Then create .env.local with those values
+### 3. Add to `.env.local`
+```
+KV_REST_API_URL=https://your-db.upstash.io
+KV_REST_API_TOKEN=your-token
 ```
 
-Or use:
+## Option 2: Via Vercel Integration
+
+### 1. Add Upstash Integration
+Go to: Vercel Dashboard → Integrations → Add Upstash Redis
+
+### 2. Pull Environment Variables
 ```bash
 vercel env pull .env.local
 ```
 
-### 4. Test Locally
+## Local Development
 
 ```bash
+npm install
 npm run dev
 ```
 
 Submit an email at http://localhost:3000
 
-View subscribers at:
-```bash
-curl http://localhost:3000/api/subscribers
-```
-
-### 5. Deploy
-
-```bash
-git push
-```
-
-Vercel will auto-deploy with the KV environment variables.
-
 ## View Subscribers
 
-**In Production:**
-```bash
-curl https://shiphaus.org/api/subscribers
-```
-
-**In Vercel Dashboard:**
-Go to: Storage → Your KV Database → Data Browser
+**In Upstash Console:**
+Go to: console.upstash.com → Your Database → Data Browser
 
 Look for:
 - `subscribers` (set of all emails)
 - `subscriber:{email}` (details for each subscriber)
 
-## Done!
+## Rate Limiting
 
-Subscribers will now persist across all deployments.
+The subscribe endpoint is rate limited to 5 requests per minute per IP address.

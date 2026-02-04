@@ -1,8 +1,39 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { kv } from '@vercel/kv';
+import { Redis } from '@upstash/redis';
+
+const redis = new Redis({
+  url: process.env.KV_REST_API_URL!,
+  token: process.env.KV_REST_API_TOKEN!,
+});
+
+const RATE_LIMIT_WINDOW = 60; // seconds
+const RATE_LIMIT_MAX = 5; // max requests per window per IP
+
+async function isRateLimited(ip: string): Promise<boolean> {
+  const key = `ratelimit:subscribe:${ip}`;
+  const current = await redis.incr(key);
+
+  if (current === 1) {
+    await redis.expire(key, RATE_LIMIT_WINDOW);
+  }
+
+  return current > RATE_LIMIT_MAX;
+}
 
 export async function POST(request: NextRequest) {
   try {
+    // Rate limiting
+    const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
+      || request.headers.get('x-real-ip')
+      || 'unknown';
+
+    if (await isRateLimited(ip)) {
+      return NextResponse.json(
+        { error: 'Too many requests. Try again later.' },
+        { status: 429 }
+      );
+    }
+
     const { email } = await request.json();
 
     // Validate email
@@ -15,7 +46,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Check for duplicates
-    const exists = await kv.sismember('subscribers', email);
+    const exists = await redis.sismember('subscribers', email);
     if (exists) {
       return NextResponse.json(
         { error: 'Already subscribed' },
@@ -24,15 +55,13 @@ export async function POST(request: NextRequest) {
     }
 
     // Add subscriber to set
-    await kv.sadd('subscribers', email);
+    await redis.sadd('subscribers', email);
 
     // Store timestamp
-    await kv.hset(`subscriber:${email}`, {
+    await redis.hset(`subscriber:${email}`, {
       email,
       timestamp: new Date().toISOString(),
     });
-
-    console.log('New subscriber:', email);
 
     return NextResponse.json({ success: true });
   } catch (error) {
