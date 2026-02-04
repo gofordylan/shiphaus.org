@@ -38,22 +38,14 @@ export default function StartAChapter() {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to submit');
+        const data = await response.json();
+        setError(data.error || "Didn't work. Try again?");
+        return;
       }
 
       setIsSuccess(true);
-      setFormData({
-        name: '',
-        email: '',
-        city: '',
-        twitter: '',
-        linkedin: '',
-        whatYouBuild: '',
-        why: '',
-        whoYouInvite: '',
-      });
     } catch (err) {
-      setError('Something went wrong. Please try again.');
+      setError("Didn't work. Try again?");
     } finally {
       setIsSubmitting(false);
     }
@@ -126,7 +118,7 @@ export default function StartAChapter() {
             transition={{ duration: 0.6, delay: 0.4 }}
           >
             <h2 className="text-2xl font-bold mb-6">Apply to Lead</h2>
-            <form onSubmit={handleSubmit} className="space-y-6 p-6 bg-white/5 border border-white/10 rounded-lg">
+            <form onSubmit={handleSubmit} className="space-y-6 p-6 md:p-8 bg-white/5 border border-white/10 rounded-2xl">
                 {/* Name and Email */}
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
@@ -140,7 +132,8 @@ export default function StartAChapter() {
                       value={formData.name}
                       onChange={handleChange}
                       required
-                      className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                      disabled={isSubmitting}
+                      className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 disabled:opacity-50 disabled:cursor-not-allowed"
                       placeholder="Your name"
                     />
                   </div>
@@ -155,7 +148,8 @@ export default function StartAChapter() {
                       value={formData.email}
                       onChange={handleChange}
                       required
-                      className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                      disabled={isSubmitting}
+                      className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 disabled:opacity-50 disabled:cursor-not-allowed"
                       placeholder="your@email.com"
                     />
                   </div>
@@ -173,7 +167,8 @@ export default function StartAChapter() {
                     value={formData.city}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                    disabled={isSubmitting}
+                    className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 disabled:opacity-50 disabled:cursor-not-allowed"
                     placeholder="Where would you run Shiphaus?"
                   />
                 </div>
@@ -190,7 +185,8 @@ export default function StartAChapter() {
                       name="twitter"
                       value={formData.twitter}
                       onChange={handleChange}
-                      className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                      disabled={isSubmitting}
+                      className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 disabled:opacity-50 disabled:cursor-not-allowed"
                       placeholder="@handle"
                     />
                   </div>
@@ -204,7 +200,8 @@ export default function StartAChapter() {
                       name="linkedin"
                       value={formData.linkedin}
                       onChange={handleChange}
-                      className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                      disabled={isSubmitting}
+                      className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 disabled:opacity-50 disabled:cursor-not-allowed"
                       placeholder="linkedin.com/in/..."
                     />
                   </div>
@@ -221,8 +218,9 @@ export default function StartAChapter() {
                     value={formData.whatYouBuild}
                     onChange={handleChange}
                     required
+                    disabled={isSubmitting}
                     rows={2}
-                    className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 resize-none"
+                    className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 resize-none disabled:opacity-50 disabled:cursor-not-allowed"
                     placeholder="Apps, hardware, content, communities..."
                   />
                 </div>
@@ -238,8 +236,9 @@ export default function StartAChapter() {
                     value={formData.why}
                     onChange={handleChange}
                     required
+                    disabled={isSubmitting}
                     rows={3}
-                    className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 resize-none"
+                    className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 resize-none disabled:opacity-50 disabled:cursor-not-allowed"
                     placeholder="Why do you want to run a chapter?"
                   />
                 </div>
@@ -254,20 +253,23 @@ export default function StartAChapter() {
                     name="whoYouInvite"
                     value={formData.whoYouInvite}
                     onChange={handleChange}
+                    disabled={isSubmitting}
                     rows={2}
-                    className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 resize-none"
+                    className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 resize-none disabled:opacity-50 disabled:cursor-not-allowed"
                     placeholder="Doesn't have to be names — types of people, communities, etc."
                   />
                 </div>
 
                 {/* Submit Button */}
-                <button
+                <motion.button
                   type="submit"
                   disabled={isSubmitting}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                   className="w-full px-6 py-3 bg-yellow-400 text-black font-semibold rounded-lg hover:bg-yellow-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isSubmitting ? "Submitting..." : "Let's chat"}
-                </button>
+                </motion.button>
 
                 {/* Error Message */}
                 {error && (
