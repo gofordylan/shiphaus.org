@@ -35,6 +35,36 @@ export default function StartAChapter() {
               Curate the builders. Find a space. Watch magic happen.
             </p>
           </motion.div>
+
+          {/* Why Lead */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="mb-16"
+          >
+            <h2 className="text-2xl font-bold mb-6">Why Lead</h2>
+            <ul className="space-y-4">
+              {[
+                'You curate the room',
+                'You watch ideas ship in 7 hours',
+                'You make friends by making things',
+                "You're connected to leads across cities",
+                "You're early",
+              ].map((item, index) => (
+                <motion.li
+                  key={index}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.4, delay: 0.3 + index * 0.1 }}
+                  className="flex items-center gap-3"
+                >
+                  <span className="text-yellow-400 text-xl">→</span>
+                  <span>{item}</span>
+                </motion.li>
+              ))}
+            </ul>
+          </motion.div>
         </div>
       </main>
     </div>
