@@ -247,9 +247,9 @@ export default function StartAChapter() {
                   },
                   {
                     quote: "The energy is real. No one leaves without shipping. That's the rule.",
-                    author: "Dylan Green",
-                    role: "SF Chapter Lead",
-                    city: "San Francisco",
+                    author: "Dylan Brodeur",
+                    role: "Forest City Chapter Lead",
+                    city: "Forest City",
                   },
                 ].map((testimonial, i) => (
                   <motion.div
