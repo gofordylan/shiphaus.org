@@ -13,8 +13,8 @@ export default function StartAChapter() {
     twitter: '',
     linkedin: '',
     whatYouBuild: '',
-    whyRunChapter: '',
-    whoYouWouldInvite: '',
+    why: '',
+    whoYouInvite: '',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -49,8 +49,8 @@ export default function StartAChapter() {
         twitter: '',
         linkedin: '',
         whatYouBuild: '',
-        whyRunChapter: '',
-        whoYouWouldInvite: '',
+        why: '',
+        whoYouInvite: '',
       });
     } catch (err) {
       setError('Something went wrong. Please try again.');
@@ -236,13 +236,13 @@ export default function StartAChapter() {
 
                 {/* Why do you want to run a chapter */}
                 <div>
-                  <label htmlFor="whyRunChapter" className="block text-sm font-medium mb-2">
+                  <label htmlFor="why" className="block text-sm font-medium mb-2">
                     Why do you want to run a chapter? *
                   </label>
                   <textarea
-                    id="whyRunChapter"
-                    name="whyRunChapter"
-                    value={formData.whyRunChapter}
+                    id="why"
+                    name="why"
+                    value={formData.why}
                     onChange={handleChange}
                     required
                     rows={3}
@@ -253,13 +253,13 @@ export default function StartAChapter() {
 
                 {/* Who would you invite */}
                 <div>
-                  <label htmlFor="whoYouWouldInvite" className="block text-sm font-medium mb-2">
+                  <label htmlFor="whoYouInvite" className="block text-sm font-medium mb-2">
                     Who would you invite? *
                   </label>
                   <textarea
-                    id="whoYouWouldInvite"
-                    name="whoYouWouldInvite"
-                    value={formData.whoYouWouldInvite}
+                    id="whoYouInvite"
+                    name="whoYouInvite"
+                    value={formData.whoYouInvite}
                     onChange={handleChange}
                     required
                     rows={2}
