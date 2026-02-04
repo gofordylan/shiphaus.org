@@ -1,9 +1,9 @@
 'use client';
 
 import { useState, FormEvent } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Rocket } from 'lucide-react';
 
 export default function StartAChapter() {
   const [formData, setFormData] = useState({
@@ -111,14 +111,22 @@ export default function StartAChapter() {
             </ul>
           </motion.div>
 
-          {/* Application Form */}
+          {/* Application Form / Success State */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
           >
-            <h2 className="text-2xl font-bold mb-6">Apply to Lead</h2>
-            <form onSubmit={handleSubmit} className="space-y-6 p-6 md:p-8 bg-white/5 border border-white/10 rounded-2xl">
+            <AnimatePresence mode="wait">
+              {!isSuccess ? (
+                <motion.div
+                  key="form"
+                  initial={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <h2 className="text-2xl font-bold mb-6">Apply to Lead</h2>
+                  <form onSubmit={handleSubmit} className="space-y-6 p-6 md:p-8 bg-white/5 border border-white/10 rounded-2xl">
                 {/* Name and Email */}
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
@@ -278,6 +286,29 @@ export default function StartAChapter() {
                   </div>
                 )}
               </form>
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="success"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: 0.2 }}
+                  className="bg-white/5 border border-white/10 rounded-2xl p-6 md:p-8 text-center py-8"
+                >
+                  <div className="text-6xl mb-6">🚀</div>
+                  <h2 className="text-2xl font-bold mb-4">You're in.</h2>
+                  <p className="text-lg text-gray-400 mb-8">
+                    We'll reach out soon to chat about bringing Shiphaus to {formData.city}.
+                  </p>
+                  <Link
+                    href="/"
+                    className="inline-block px-8 py-3 bg-yellow-400 text-black font-semibold rounded-lg hover:bg-yellow-300 transition-colors"
+                  >
+                    Back to Home
+                  </Link>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </motion.div>
         </div>
       </main>
