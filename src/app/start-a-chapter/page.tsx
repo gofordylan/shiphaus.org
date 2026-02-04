@@ -126,14 +126,7 @@ export default function StartAChapter() {
             transition={{ duration: 0.6, delay: 0.4 }}
           >
             <h2 className="text-2xl font-bold mb-6">Apply to Lead</h2>
-            {isSuccess ? (
-              <div className="p-6 bg-green-500/10 border border-green-500/20 rounded-lg">
-                <p className="text-green-400">
-                  Thanks for applying! We'll be in touch soon.
-                </p>
-              </div>
-            ) : (
-              <form onSubmit={handleSubmit} className="space-y-6 p-6 bg-white/5 border border-white/10 rounded-lg">
+            <form onSubmit={handleSubmit} className="space-y-6 p-6 bg-white/5 border border-white/10 rounded-lg">
                 {/* Name and Email */}
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
@@ -181,7 +174,7 @@ export default function StartAChapter() {
                     onChange={handleChange}
                     required
                     className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400"
-                    placeholder="San Francisco"
+                    placeholder="Where would you run Shiphaus?"
                   />
                 </div>
 
@@ -198,7 +191,7 @@ export default function StartAChapter() {
                       value={formData.twitter}
                       onChange={handleChange}
                       className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400"
-                      placeholder="@username"
+                      placeholder="@handle"
                     />
                   </div>
                   <div>
@@ -212,7 +205,7 @@ export default function StartAChapter() {
                       value={formData.linkedin}
                       onChange={handleChange}
                       className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400"
-                      placeholder="linkedin.com/in/username"
+                      placeholder="linkedin.com/in/..."
                     />
                   </div>
                 </div>
@@ -230,7 +223,7 @@ export default function StartAChapter() {
                     required
                     rows={2}
                     className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 resize-none"
-                    placeholder="Tell us about what you build"
+                    placeholder="Apps, hardware, content, communities..."
                   />
                 </div>
 
@@ -247,24 +240,23 @@ export default function StartAChapter() {
                     required
                     rows={3}
                     className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 resize-none"
-                    placeholder="What motivates you to lead Shiphaus in your city?"
+                    placeholder="Why do you want to run a chapter?"
                   />
                 </div>
 
                 {/* Who would you invite */}
                 <div>
                   <label htmlFor="whoYouInvite" className="block text-sm font-medium mb-2">
-                    Who would you invite? *
+                    Who would you invite?
                   </label>
                   <textarea
                     id="whoYouInvite"
                     name="whoYouInvite"
                     value={formData.whoYouInvite}
                     onChange={handleChange}
-                    required
                     rows={2}
                     className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 resize-none"
-                    placeholder="Who are the builders in your city?"
+                    placeholder="Doesn't have to be names — types of people, communities, etc."
                   />
                 </div>
 
@@ -284,7 +276,6 @@ export default function StartAChapter() {
                   </div>
                 )}
               </form>
-            )}
           </motion.div>
         </div>
       </main>
