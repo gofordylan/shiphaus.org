@@ -56,30 +56,30 @@ export default function StartAChapter() {
       {!isSuccess ? (
         <>
           {/* Hero Section - Editorial Style */}
-          <section className="relative py-20 md:py-32 px-4 overflow-hidden">
+          <section className="relative py-12 md:py-20 px-4 overflow-hidden">
             {/* Subtle grain texture overlay */}
             <div className="absolute inset-0 opacity-[0.015] pointer-events-none bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIGJhc2VGcmVxdWVuY3k9Ii43NSIgc3RpdGNoVGlsZXM9InN0aXRjaCIgdHlwZT0iZnJhY3RhbE5vaXNlIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbHRlcj0idXJsKCNhKSIvPjwvc3ZnPg==')]" />
 
             <div className="max-w-6xl mx-auto">
-              <div className="grid lg:grid-cols-2 gap-16 items-center">
+              <div className="grid lg:grid-cols-2 gap-12 items-center">
                 {/* Left: Copy */}
                 <motion.div
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
                 >
-                  <div className="mb-6">
+                  <div className="mb-4">
                     <span className="inline-block px-3 py-1 text-xs font-bold tracking-widest uppercase bg-[var(--text-primary)] text-white">
                       Chapter Lead
                     </span>
                   </div>
 
-                  <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold leading-[0.95] mb-8 tracking-tight">
+                  <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold leading-[0.95] mb-6 tracking-tight">
                     Run Shiphaus<br/>
                     in <span className="italic text-[var(--accent)]">your</span> city
                   </h1>
 
-                  <div className="space-y-6 text-xl md:text-2xl text-[var(--text-secondary)] font-body leading-relaxed mb-12">
+                  <div className="space-y-4 text-xl md:text-2xl text-[var(--text-secondary)] font-body leading-relaxed mb-8">
                     <p>
                       You know the builders in your city. The ones who actually ship.
                     </p>
@@ -142,7 +142,7 @@ export default function StartAChapter() {
           </section>
 
           {/* What You'll Actually Do - Brutally Clear */}
-          <section className="py-20 md:py-28 bg-[var(--text-primary)] text-white relative overflow-hidden">
+          <section className="py-16 md:py-20 bg-[var(--text-primary)] text-white relative overflow-hidden">
             {/* Subtle accent line */}
             <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[var(--accent)] to-transparent opacity-50" />
 
@@ -153,11 +153,11 @@ export default function StartAChapter() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.6 }}
               >
-                <h2 className="text-sm font-bold tracking-widest uppercase mb-12 text-white/40">
+                <h2 className="text-sm font-bold tracking-widest uppercase mb-8 text-white/40">
                   Your Role
                 </h2>
 
-                <div className="space-y-8 text-2xl md:text-3xl font-body leading-relaxed">
+                <div className="space-y-6 text-2xl md:text-3xl font-body leading-relaxed">
                   <motion.div
                     initial={{ opacity: 0, x: -20 }}
                     whileInView={{ opacity: 1, x: 0 }}
@@ -211,7 +211,7 @@ export default function StartAChapter() {
                   </motion.div>
                 </div>
 
-                <div className="mt-16 pt-8 border-t border-white/10">
+                <div className="mt-12 pt-6 border-t border-white/10">
                   <p className="text-lg text-white/60 font-body">
                     We handle: branding, playbooks, intros to other chapter leads, and whatever else you need.
                   </p>
@@ -221,13 +221,13 @@ export default function StartAChapter() {
           </section>
 
           {/* Social Proof - Chapter Leads */}
-          <section className="py-20 md:py-28 px-4">
+          <section className="py-16 md:py-20 px-4">
             <div className="max-w-5xl mx-auto">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                className="mb-16"
+                className="mb-12"
               >
                 <h2 className="text-sm font-bold tracking-widest uppercase mb-3 text-[var(--text-muted)]">
                   Current Chapter Leads
@@ -237,7 +237,7 @@ export default function StartAChapter() {
                 </p>
               </motion.div>
 
-              <div className="grid md:grid-cols-2 gap-12">
+              <div className="grid md:grid-cols-2 gap-10">
                 {[
                   {
                     quote: "First event: 14 people showed up. 14 projects shipped. That's when I knew this was different.",
@@ -279,15 +279,15 @@ export default function StartAChapter() {
           </section>
 
           {/* Application Form - Clean & Serious */}
-          <section className="py-20 md:py-28 px-4 bg-[var(--bg-secondary)]">
+          <section className="py-16 md:py-20 px-4 bg-[var(--bg-secondary)]">
             <div className="max-w-2xl mx-auto">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                className="mb-12"
+                className="mb-10"
               >
-                <h2 className="text-4xl md:text-5xl font-bold mb-4">
+                <h2 className="text-4xl md:text-5xl font-bold mb-3">
                   Apply to lead
                 </h2>
                 <p className="text-xl text-[var(--text-secondary)] font-body">
@@ -300,13 +300,13 @@ export default function StartAChapter() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: 0.2 }}
-                className="bg-white p-8 md:p-12 shadow-sm border border-[var(--border-subtle)]"
+                className="bg-white p-8 md:p-10 shadow-sm border border-[var(--border-subtle)]"
               >
-                <form onSubmit={handleSubmit} className="space-y-8">
+                <form onSubmit={handleSubmit} className="space-y-6">
                   {/* Name and Email */}
-                  <div className="grid md:grid-cols-2 gap-6">
+                  <div className="grid md:grid-cols-2 gap-5">
                     <div>
-                      <label htmlFor="name" className="block text-sm font-bold mb-3 text-[var(--text-primary)] uppercase tracking-wide">
+                      <label htmlFor="name" className="block text-sm font-bold mb-2 text-[var(--text-primary)] uppercase tracking-wide">
                         Name <span className="text-[var(--accent)]">*</span>
                       </label>
                       <input
@@ -322,7 +322,7 @@ export default function StartAChapter() {
                       />
                     </div>
                     <div>
-                      <label htmlFor="email" className="block text-sm font-bold mb-3 text-[var(--text-primary)] uppercase tracking-wide">
+                      <label htmlFor="email" className="block text-sm font-bold mb-2 text-[var(--text-primary)] uppercase tracking-wide">
                         Email <span className="text-[var(--accent)]">*</span>
                       </label>
                       <input
@@ -341,7 +341,7 @@ export default function StartAChapter() {
 
                   {/* City */}
                   <div>
-                    <label htmlFor="city" className="block text-sm font-bold mb-3 text-[var(--text-primary)] uppercase tracking-wide">
+                    <label htmlFor="city" className="block text-sm font-bold mb-2 text-[var(--text-primary)] uppercase tracking-wide">
                       City <span className="text-[var(--accent)]">*</span>
                     </label>
                     <input
@@ -358,9 +358,9 @@ export default function StartAChapter() {
                   </div>
 
                   {/* Twitter and LinkedIn */}
-                  <div className="grid md:grid-cols-2 gap-6">
+                  <div className="grid md:grid-cols-2 gap-5">
                     <div>
-                      <label htmlFor="twitter" className="block text-sm font-bold mb-3 text-[var(--text-primary)] uppercase tracking-wide">
+                      <label htmlFor="twitter" className="block text-sm font-bold mb-2 text-[var(--text-primary)] uppercase tracking-wide">
                         Twitter
                       </label>
                       <input
@@ -375,7 +375,7 @@ export default function StartAChapter() {
                       />
                     </div>
                     <div>
-                      <label htmlFor="linkedin" className="block text-sm font-bold mb-3 text-[var(--text-primary)] uppercase tracking-wide">
+                      <label htmlFor="linkedin" className="block text-sm font-bold mb-2 text-[var(--text-primary)] uppercase tracking-wide">
                         LinkedIn
                       </label>
                       <input
@@ -393,10 +393,10 @@ export default function StartAChapter() {
 
                   {/* What do you build */}
                   <div>
-                    <label htmlFor="whatYouBuild" className="block text-sm font-bold mb-3 text-[var(--text-primary)] uppercase tracking-wide">
+                    <label htmlFor="whatYouBuild" className="block text-sm font-bold mb-2 text-[var(--text-primary)] uppercase tracking-wide">
                       What do you build? <span className="text-[var(--accent)]">*</span>
                     </label>
-                    <p className="text-sm text-[var(--text-muted)] mb-3 font-body">
+                    <p className="text-sm text-[var(--text-muted)] mb-2 font-body">
                       We want to see you ship. Links, repos, products — show us.
                     </p>
                     <textarea
@@ -414,10 +414,10 @@ export default function StartAChapter() {
 
                   {/* Why do you want to run a chapter */}
                   <div>
-                    <label htmlFor="why" className="block text-sm font-bold mb-3 text-[var(--text-primary)] uppercase tracking-wide">
+                    <label htmlFor="why" className="block text-sm font-bold mb-2 text-[var(--text-primary)] uppercase tracking-wide">
                       Why do you want to run a chapter? <span className="text-[var(--accent)]">*</span>
                     </label>
-                    <p className="text-sm text-[var(--text-muted)] mb-3 font-body">
+                    <p className="text-sm text-[var(--text-muted)] mb-2 font-body">
                       Be honest. What&apos;s the real motivation here?
                     </p>
                     <textarea
@@ -435,10 +435,10 @@ export default function StartAChapter() {
 
                   {/* Who would you invite */}
                   <div>
-                    <label htmlFor="whoYouInvite" className="block text-sm font-bold mb-3 text-[var(--text-primary)] uppercase tracking-wide">
+                    <label htmlFor="whoYouInvite" className="block text-sm font-bold mb-2 text-[var(--text-primary)] uppercase tracking-wide">
                       Who would you invite to the first event?
                     </label>
-                    <p className="text-sm text-[var(--text-muted)] mb-3 font-body">
+                    <p className="text-sm text-[var(--text-muted)] mb-2 font-body">
                       Names, types of people, communities — give us a sense of your network.
                     </p>
                     <textarea
@@ -454,7 +454,7 @@ export default function StartAChapter() {
                   </div>
 
                   {/* Submit Button */}
-                  <div className="pt-6">
+                  <div className="pt-4">
                     <motion.button
                       type="submit"
                       disabled={isSubmitting}
