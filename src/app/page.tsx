@@ -131,7 +131,7 @@ function ValuePropsSection() {
     {
       icon: '/icons/ships-icon.png',
       title: 'Everyone Ships. No One Quits.',
-      description: 'First event: 14 builders, 14 live products. That\'s what Shiphaus is.',
+      description: 'Everyone ships something. Big or small, we all get through it.',
     },
   ];
 
@@ -345,10 +345,10 @@ export default function Home() {
     <>
       <HeroSection />
       <ValuePropsSection />
+      <EmailCapture />
       <ChaptersSection />
       <ProjectsSection />
       <TestimonialsSection />
-      <EmailCapture />
       <CTASection />
     </>
   );

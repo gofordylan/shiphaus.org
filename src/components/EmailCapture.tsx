@@ -56,14 +56,14 @@ export function EmailCapture() {
   };
 
   return (
-    <section className="py-20 bg-[var(--bg-secondary)]">
-      <div className="max-w-[500px] mx-auto px-4">
+    <section className="pt-2 pb-10 bg-[var(--bg-secondary)]">
+      <div className="max-w-2xl mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="bg-white rounded-2xl p-6 md:p-8 shadow-md border border-[var(--border-subtle)]"
+          className="bg-white rounded-xl p-4 md:p-5 shadow-sm border border-[var(--border-subtle)]"
         >
           <AnimatePresence mode="wait">
             {!isSuccess ? (
@@ -73,9 +73,12 @@ export function EmailCapture() {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.3 }}
               >
-                <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-6">
+                <h3 className="text-lg font-bold text-[var(--text-primary)] mb-1">
                   Build with us
-                </h2>
+                </h3>
+                <p className="text-sm text-[var(--text-secondary)] font-body mb-3">
+                  Stay up-to-date with Shiphaus events, chapters, and builds.
+                </p>
 
                 <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3">
                   <div className="flex-1">
