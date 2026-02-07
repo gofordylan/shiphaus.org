@@ -1,6 +1,5 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import { ShiphausLogo } from '@/components/ShiphausLogo';
@@ -9,8 +8,7 @@ import Image from 'next/image';
 import { ChapterCard } from '@/components/ChapterCard';
 import { ProjectCard } from '@/components/ProjectCard';
 import { EmailCapture } from '@/components/EmailCapture';
-import { chapters, projects as staticProjects, events, testimonials } from '@/lib/data';
-import { Project } from '@/types';
+import { chapters, projects, events, testimonials } from '@/lib/data';
 
 function HeroSection() {
   return (
@@ -71,7 +69,7 @@ function HeroSection() {
             {/* Stats */}
             <div className="flex flex-wrap gap-10 mt-12 pt-8 border-t border-[var(--border-strong)]">
               {[
-                { label: 'Projects Shipped', value: String(staticProjects.length) },
+                { label: 'Projects Shipped', value: String(projects.length) },
                 { label: 'Chapters', value: String(chapters.length) },
                 { label: 'Build Events', value: String(events.length) },
               ].map((stat, i) => (
@@ -190,17 +188,6 @@ function ChaptersSection() {
 }
 
 function ProjectsSection() {
-  const [featured, setFeatured] = useState<Project[]>(staticProjects.slice(0, 6));
-
-  useEffect(() => {
-    fetch('/api/projects/featured')
-      .then(r => r.json())
-      .then((data: Project[]) => {
-        if (data.length > 0) setFeatured(data);
-      })
-      .catch(() => {});
-  }, []);
-
   return (
     <section className="py-20 bg-[var(--bg-secondary)]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -226,7 +213,7 @@ function ProjectsSection() {
         </motion.div>
 
         <div className="masonry-grid">
-          {featured.map((project, index) => (
+          {projects.map((project, index) => (
             <ProjectCard key={project.id} project={project} index={index} />
           ))}
         </div>
@@ -339,6 +326,12 @@ function CTASection() {
           <p className="text-white/70 font-body text-lg mb-8 max-w-xl mx-auto">
             Details coming soon. Want to start a chapter in your city?
           </p>
+          <Link
+            href="/start-a-chapter"
+            className="bg-white/10 text-white px-6 py-3 rounded-lg font-semibold hover:bg-white/20 transition-colors inline-block"
+          >
+            Start a Chapter
+          </Link>
         </motion.div>
       </div>
     </section>
@@ -354,6 +347,7 @@ export default function Home() {
       <EmailCapture />
       <ProjectsSection />
       <TestimonialsSection />
+      <EmailCapture />
       <CTASection />
     </>
   );
