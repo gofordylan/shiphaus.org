@@ -71,7 +71,7 @@ export const events: Event[] = [
   {
     id: 'ny-zero-to-one',
     chapterId: 'new-york',
-    name: 'Zero to One Day',
+    name: 'Shiphaus NY #1',
     date: '2026-01-11',
     location: 'New York',
     builderCount: 14,

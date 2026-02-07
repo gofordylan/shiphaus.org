@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import { ShiphausLogo } from '@/components/ShiphausLogo';
@@ -8,7 +9,9 @@ import Image from 'next/image';
 import { ChapterCard } from '@/components/ChapterCard';
 import { ProjectCard } from '@/components/ProjectCard';
 import { EmailCapture } from '@/components/EmailCapture';
-import { chapters, projects, events, testimonials } from '@/lib/data';
+import { chapters, projects as staticProjects, events, testimonials } from '@/lib/data';
+import { Project } from '@/types';
+
 function HeroSection() {
   return (
     <section className="hero-pattern relative overflow-hidden">
@@ -68,7 +71,7 @@ function HeroSection() {
             {/* Stats */}
             <div className="flex flex-wrap gap-10 mt-12 pt-8 border-t border-[var(--border-strong)]">
               {[
-                { label: 'Projects Shipped', value: String(projects.length) },
+                { label: 'Projects Shipped', value: String(staticProjects.length) },
                 { label: 'Chapters', value: String(chapters.length) },
                 { label: 'Build Events', value: String(events.length) },
               ].map((stat, i) => (
@@ -187,7 +190,16 @@ function ChaptersSection() {
 }
 
 function ProjectsSection() {
-  const featured = projects.slice(0, 6);
+  const [featured, setFeatured] = useState<Project[]>(staticProjects.slice(0, 6));
+
+  useEffect(() => {
+    fetch('/api/projects/featured')
+      .then(r => r.json())
+      .then((data: Project[]) => {
+        if (data.length > 0) setFeatured(data);
+      })
+      .catch(() => {});
+  }, []);
 
   return (
     <section className="py-20 bg-[var(--bg-secondary)]">

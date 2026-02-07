@@ -1,18 +1,29 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Filter } from 'lucide-react';
 import Link from 'next/link';
 import { ProjectCard } from '@/components/ProjectCard';
-import { projects, chapters } from '@/lib/data';
+import { projects as staticProjects, chapters } from '@/lib/data';
+import { Project } from '@/types';
 
 export default function ProjectsPage() {
   const [selectedChapter, setSelectedChapter] = useState<string>('all');
+  const [allProjects, setAllProjects] = useState<Project[]>(staticProjects);
+
+  useEffect(() => {
+    fetch('/api/projects')
+      .then(r => r.json())
+      .then((data: Project[]) => {
+        if (data.length > 0) setAllProjects(data);
+      })
+      .catch(() => {});
+  }, []);
 
   const filteredProjects = selectedChapter === 'all'
-    ? projects
-    : projects.filter(p => p.chapterId === selectedChapter);
+    ? allProjects
+    : allProjects.filter(p => p.chapterId === selectedChapter);
 
   return (
     <div className="min-h-screen py-12 px-4">

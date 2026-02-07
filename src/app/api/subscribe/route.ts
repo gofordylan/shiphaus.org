@@ -1,10 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { Redis } from '@upstash/redis';
-
-const redis = new Redis({
-  url: process.env.UPSTASH_REDIS_REST_URL!,
-  token: process.env.UPSTASH_REDIS_REST_TOKEN!,
-});
+import { redis } from '@/lib/redis';
 
 const RATE_LIMIT_WINDOW = 60; // seconds
 const RATE_LIMIT_MAX = 5; // max requests per window per IP
