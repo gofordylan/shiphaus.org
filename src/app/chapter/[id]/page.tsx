@@ -221,7 +221,7 @@ function ChapterContent() {
       )}
 
       {/* Events Section */}
-      <section className="pt-28 pb-16 bg-[var(--bg-secondary)]">
+      <section className="pt-16 pb-16 bg-[var(--bg-secondary)]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-end justify-between mb-10">
             <motion.div
@@ -499,71 +499,68 @@ function ChapterContent() {
       </section>
 
       {/* Chapter Lead */}
-      <section className="py-16 bg-[var(--bg-primary)]">
+      <section className="py-6 border-t border-[var(--border-subtle)] bg-[var(--bg-secondary)]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center"
-          >
-            <p className="text-xs font-semibold text-[var(--text-muted)] uppercase tracking-widest mb-6">
-              Chapter {chapter.lead.isFounder ? 'Founder' : 'Lead'}
-            </p>
+          <div className="flex items-center gap-4">
             <img
               src={chapter.lead.avatar}
               alt={chapter.lead.name}
-              className="w-20 h-20 rounded-full border-2 object-cover mx-auto mb-4"
+              className="w-10 h-10 rounded-full border-2 object-cover shrink-0"
               style={{ borderColor: accentColor }}
             />
-            <p className="text-xl font-bold mb-1">{chapter.lead.name}</p>
-            {chapter.lead.x ? (
-              <a
-                href={chapter.lead.x}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-sm text-[var(--text-muted)] hover:text-[var(--accent)] transition-colors"
-              >
-                {chapter.lead.handle}
-              </a>
-            ) : (
-              <p className="text-sm text-[var(--text-muted)]">{chapter.lead.handle}</p>
-            )}
-            {(chapter.lead.x || chapter.lead.github || chapter.lead.website) && (
-              <div className="flex items-center justify-center gap-2 mt-4">
-                {chapter.lead.x && (
-                  <a
-                    href={chapter.lead.x}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-2 rounded-lg text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-secondary)] transition-colors"
-                  >
-                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-                  </a>
-                )}
-                {chapter.lead.github && (
-                  <a
-                    href={chapter.lead.github}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-2 rounded-lg text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-secondary)] transition-colors"
-                  >
-                    <Github className="w-4 h-4" />
-                  </a>
-                )}
-                {chapter.lead.website && (
-                  <a
-                    href={chapter.lead.website}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-2 rounded-lg text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-secondary)] transition-colors"
-                  >
-                    <ExternalLink className="w-4 h-4" />
-                  </a>
-                )}
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2">
+                <p className="font-semibold text-sm">{chapter.lead.name}</p>
+                <span className="text-xs text-[var(--text-muted)]">
+                  Chapter {chapter.lead.isFounder ? 'Founder' : 'Lead'}
+                </span>
               </div>
-            )}
-          </motion.div>
+              {chapter.lead.x ? (
+                <a
+                  href={chapter.lead.x}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs text-[var(--text-muted)] hover:text-[var(--accent)] transition-colors"
+                >
+                  {chapter.lead.handle}
+                </a>
+              ) : (
+                <p className="text-xs text-[var(--text-muted)]">{chapter.lead.handle}</p>
+              )}
+            </div>
+            <div className="flex items-center gap-1 shrink-0">
+              {chapter.lead.x && (
+                <a
+                  href={chapter.lead.x}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2 rounded-lg text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-primary)] transition-colors"
+                >
+                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                </a>
+              )}
+              {chapter.lead.github && (
+                <a
+                  href={chapter.lead.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2 rounded-lg text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-primary)] transition-colors"
+                >
+                  <Github className="w-4 h-4" />
+                </a>
+              )}
+              {chapter.lead.website && (
+                <a
+                  href={chapter.lead.website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2 rounded-lg text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-primary)] transition-colors"
+                >
+                  <ExternalLink className="w-4 h-4" />
+                </a>
+              )}
+            </div>
+          </div>
         </div>
       </section>
 
