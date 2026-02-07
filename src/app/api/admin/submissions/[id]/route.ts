@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { approveSubmission, rejectSubmission, deleteSubmission, getSubmissionById } from '@/lib/redis-data';
+import { approveSubmission, rejectSubmission, deleteSubmission, deleteProject, getSubmissionById } from '@/lib/redis-data';
 import { auth } from '@/lib/auth';
 
 export async function PATCH(
@@ -38,6 +38,11 @@ export async function DELETE(
     }
 
     await deleteSubmission(id);
+
+    // Also delete the auto-created project
+    const projectId = `proj-${id.replace('sub-', '')}`;
+    await deleteProject(projectId);
+
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Submission delete error:', error);

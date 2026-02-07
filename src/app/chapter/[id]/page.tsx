@@ -8,8 +8,7 @@ import {
   Calendar, MapPin, Layers, Plus,
   ExternalLink, Github, Settings, Check,
   Eye, ShieldCheck, Image as ImageIcon, Link2,
-  Trash2, Pencil, ChevronDown, ChevronUp,
-  CheckCircle, XCircle,
+  Trash2, ChevronDown, ChevronUp,
 } from 'lucide-react';
 import Link from 'next/link';
 import { getChapter, getChapterEvents, getChapterProjects, chapterColorMap } from '@/lib/data';
@@ -141,24 +140,11 @@ function ChapterContent() {
     } catch {}
   }
 
-  async function handleSubmissionAction(submissionId: string, action: 'approve' | 'reject', eventId: string) {
-    try {
-      await fetch(`/api/admin/submissions/${submissionId}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action }),
-      });
-      fetchEventSubmissions(eventId);
-      fetchData();
-      setSuccessMessage(action === 'approve' ? 'Submission approved!' : 'Submission rejected.');
-      setTimeout(() => setSuccessMessage(null), 3000);
-    } catch {}
-  }
-
   async function handleDeleteSubmission(submissionId: string, eventId: string) {
     try {
       await fetch(`/api/admin/submissions/${submissionId}`, { method: 'DELETE' });
       fetchEventSubmissions(eventId);
+      fetchData();
     } catch {}
   }
 
@@ -166,16 +152,18 @@ function ChapterContent() {
     try {
       await fetch(`/api/submissions/${submissionId}`, { method: 'DELETE' });
       fetchUserSubmissions();
-      setSuccessMessage('Submission deleted.');
+      fetchData();
+      setSuccessMessage('Project removed.');
       setTimeout(() => setSuccessMessage(null), 3000);
     } catch {}
   }
 
   function handleSubmitted() {
     setSubmitModal(null);
-    setSuccessMessage('Project submitted! It will appear once approved.');
+    setSuccessMessage('Project submitted!');
     setTimeout(() => setSuccessMessage(null), 5000);
     fetchUserSubmissions();
+    fetchData();
   }
 
   function toggleSubmissions(eventId: string) {
@@ -404,35 +392,23 @@ function ChapterContent() {
                           {/* User's own submissions for this event */}
                           {!showAdmin && mySubmissions.length > 0 && (
                             <div className="mt-4 pt-4 border-t border-[var(--border-subtle)]">
-                              <p className="text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider mb-3">Your Submissions</p>
+                              <p className="text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider mb-3">Your Projects</p>
                               <div className="space-y-2">
                                 {mySubmissions.map(sub => (
                                   <div key={sub.id} className="flex items-center justify-between bg-[var(--bg-secondary)] rounded-lg px-4 py-3">
                                     <div className="flex-1 min-w-0">
-                                      <div className="flex items-center gap-2">
-                                        <span className="font-medium text-sm truncate">{sub.title}</span>
-                                        <SubmissionStatusBadge status={sub.status} />
-                                      </div>
+                                      <span className="font-medium text-sm truncate">{sub.title}</span>
                                       <p className="text-xs text-[var(--text-muted)] truncate">{sub.description}</p>
                                     </div>
-                                    {sub.status === 'pending' && (
-                                      <div className="flex items-center gap-1 ml-3 shrink-0">
-                                        <button
-                                          onClick={() => setSubmitModal({ eventId: event.id, eventTitle: event.title, editSubmission: sub })}
-                                          className="p-1.5 rounded-lg text-[var(--text-muted)] hover:text-[var(--accent)] hover:bg-white transition-colors cursor-pointer"
-                                          title="Edit"
-                                        >
-                                          <Pencil className="w-3.5 h-3.5" />
-                                        </button>
-                                        <button
-                                          onClick={() => handleDeleteUserSubmission(sub.id)}
-                                          className="p-1.5 rounded-lg text-[var(--text-muted)] hover:text-red-500 hover:bg-white transition-colors cursor-pointer"
-                                          title="Delete"
-                                        >
-                                          <Trash2 className="w-3.5 h-3.5" />
-                                        </button>
-                                      </div>
-                                    )}
+                                    <div className="flex items-center gap-1 ml-3 shrink-0">
+                                      <button
+                                        onClick={() => handleDeleteUserSubmission(sub.id)}
+                                        className="p-1.5 rounded-lg text-[var(--text-muted)] hover:text-red-500 hover:bg-white transition-colors cursor-pointer"
+                                        title="Remove"
+                                      >
+                                        <Trash2 className="w-3.5 h-3.5" />
+                                      </button>
+                                    </div>
                                   </div>
                                 ))}
                               </div>
@@ -446,42 +422,27 @@ function ChapterContent() {
                                 onClick={() => toggleSubmissions(event.id)}
                                 className="flex items-center gap-2 text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider hover:text-[var(--text-primary)] cursor-pointer transition-colors"
                               >
-                                Submissions
+                                Submissions ({eventSubs.length + eventProjects.length})
                                 {isSubmissionsExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
                               </button>
 
                               {isSubmissionsExpanded && (
                                 <div className="mt-3 space-y-2">
-                                  {eventSubs.length === 0 ? (
+                                  {eventSubs.length === 0 && eventProjects.length === 0 ? (
                                     <p className="text-sm text-[var(--text-muted)] italic">No submissions yet</p>
                                   ) : (
-                                    eventSubs.map(sub => (
-                                      <div key={sub.id} className="flex items-center justify-between bg-[var(--bg-secondary)] rounded-lg px-4 py-3">
-                                        <div className="flex-1 min-w-0">
-                                          <div className="flex items-center gap-2">
-                                            <span className="font-medium text-sm truncate">{sub.title}</span>
-                                            <SubmissionStatusBadge status={sub.status} />
+                                    <>
+                                      {eventSubs.map(sub => (
+                                        <div key={sub.id} className="flex items-center justify-between bg-[var(--bg-secondary)] rounded-lg px-4 py-3">
+                                          <div className="flex-1 min-w-0">
+                                            <div className="flex items-center gap-2">
+                                              <span className="font-medium text-sm truncate">{sub.title}</span>
+                                            </div>
+                                            <p className="text-xs text-[var(--text-muted)]">
+                                              {sub.builderName} &middot; {sub.submittedBy || 'unknown'}
+                                            </p>
                                           </div>
-                                          <p className="text-xs text-[var(--text-muted)]">
-                                            {sub.builderName} &middot; {sub.submittedBy || 'unknown'}
-                                          </p>
-                                        </div>
-                                        {sub.status === 'pending' && (
                                           <div className="flex items-center gap-1 ml-3 shrink-0">
-                                            <button
-                                              onClick={() => handleSubmissionAction(sub.id, 'approve', event.id)}
-                                              className="p-1.5 rounded-lg text-emerald-600 hover:bg-emerald-50 transition-colors cursor-pointer"
-                                              title="Approve"
-                                            >
-                                              <CheckCircle className="w-4 h-4" />
-                                            </button>
-                                            <button
-                                              onClick={() => handleSubmissionAction(sub.id, 'reject', event.id)}
-                                              className="p-1.5 rounded-lg text-red-500 hover:bg-red-50 transition-colors cursor-pointer"
-                                              title="Reject"
-                                            >
-                                              <XCircle className="w-4 h-4" />
-                                            </button>
                                             <button
                                               onClick={() => handleDeleteSubmission(sub.id, event.id)}
                                               className="p-1.5 rounded-lg text-[var(--text-muted)] hover:text-red-500 hover:bg-white transition-colors cursor-pointer"
@@ -490,10 +451,38 @@ function ChapterContent() {
                                               <Trash2 className="w-3.5 h-3.5" />
                                             </button>
                                           </div>
-                                        )}
-                                      </div>
-                                    ))
+                                        </div>
+                                      ))}
+                                      {eventProjects.length > 0 && (
+                                        <div className="grid sm:grid-cols-2 gap-4 mt-3">
+                                          {eventProjects.map((project) => (
+                                            <ProjectRow key={project.id} project={project} />
+                                          ))}
+                                        </div>
+                                      )}
+                                    </>
                                   )}
+                                </div>
+                              )}
+                            </div>
+                          )}
+
+                          {/* Non-admin: show projects in collapsible section */}
+                          {!showAdmin && eventProjects.length > 0 && (
+                            <div className="mt-4 pt-4 border-t border-[var(--border-subtle)]">
+                              <button
+                                onClick={() => toggleSubmissions(event.id)}
+                                className="flex items-center gap-2 text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider hover:text-[var(--text-primary)] cursor-pointer transition-colors"
+                              >
+                                Projects ({eventProjects.length})
+                                {isSubmissionsExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+                              </button>
+
+                              {isSubmissionsExpanded && (
+                                <div className="grid sm:grid-cols-2 gap-4 mt-3">
+                                  {eventProjects.map((project) => (
+                                    <ProjectRow key={project.id} project={project} />
+                                  ))}
                                 </div>
                               )}
                             </div>
@@ -501,17 +490,6 @@ function ChapterContent() {
                         </>
                       )}
                     </div>
-
-                    {/* Projects grid */}
-                    {eventProjects.length > 0 && (
-                      <div className="border-t border-[var(--border-subtle)] bg-[var(--bg-primary)] p-6">
-                        <div className="grid sm:grid-cols-2 gap-4">
-                          {eventProjects.map((project) => (
-                            <ProjectRow key={project.id} project={project} />
-                          ))}
-                        </div>
-                      </div>
-                    )}
                   </div>
                 </motion.div>
               );
@@ -616,21 +594,6 @@ function StatusBadge({ status }: { status: EventStatus }) {
 
   return (
     <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${c.bg} ${c.text}`}>
-      {c.label}
-    </span>
-  );
-}
-
-function SubmissionStatusBadge({ status }: { status: string }) {
-  const config: Record<string, { label: string; className: string }> = {
-    pending: { label: 'Pending', className: 'bg-amber-50 text-amber-700' },
-    approved: { label: 'Approved', className: 'bg-emerald-50 text-emerald-700' },
-    rejected: { label: 'Rejected', className: 'bg-red-50 text-red-600' },
-  };
-  const c = config[status] || config.pending;
-
-  return (
-    <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${c.className}`}>
       {c.label}
     </span>
   );

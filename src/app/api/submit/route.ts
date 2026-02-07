@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { redis } from '@/lib/redis';
 import { auth } from '@/lib/auth';
-import { createSubmission } from '@/lib/redis-data';
+import { createSubmission, approveSubmission } from '@/lib/redis-data';
 import { ProjectType, Submission } from '@/types';
 
 const RATE_LIMIT_WINDOW = 60;
@@ -87,6 +87,14 @@ export async function POST(request: NextRequest) {
     };
 
     await createSubmission(submission);
+
+    // Auto-approve: immediately create the project
+    await approveSubmission(
+      submission.id,
+      session.user.email,
+      submission.chapterId,
+      submission.eventId,
+    );
 
     return NextResponse.json({ success: true });
   } catch (error) {
