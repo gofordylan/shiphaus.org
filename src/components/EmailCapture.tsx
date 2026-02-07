@@ -18,7 +18,6 @@ export function EmailCapture() {
     e.preventDefault();
     setError(null);
 
-    // Validate email
     if (!email || !validateEmail(email)) {
       setError('Need a valid email');
       return;
@@ -50,45 +49,59 @@ export function EmailCapture() {
     }
   };
 
-  const handleRetry = () => {
-    setError(null);
-    setEmail('');
-  };
 
   return (
-    <section className="pt-2 pb-10 bg-[#F9F9F7]">
-      <div className="max-w-2xl mx-auto px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="bg-white rounded-xl p-4 md:p-5 shadow-sm border border-[var(--border-subtle)]"
-        >
-          <AnimatePresence mode="wait">
-            {!isSuccess ? (
-              <motion.div
-                key="form"
-                initial={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.3 }}
-              >
-                <h3 className="text-lg font-bold text-[var(--text-primary)] mb-1">
-                  Build with us
-                </h3>
-                <p className="text-sm text-[var(--text-secondary)] font-body mb-3">
-                  Stay up-to-date with Shiphaus events, chapters, and builds.
-                </p>
+    <section className="relative py-12 md:py-16 bg-[var(--text-primary)] overflow-hidden">
+      {/* Warm accent glow */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-[var(--accent)]/[0.06] rounded-full blur-3xl" />
+      </div>
 
-                <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3">
+      <div className="max-w-2xl mx-auto px-4 sm:px-6 relative">
+        <AnimatePresence mode="wait">
+          {!isSuccess ? (
+            <motion.div
+              key="form"
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+              className="text-center"
+            >
+              <h2 className="text-2xl md:text-3xl font-bold text-white mb-2">
+                Build with us
+              </h2>
+              <p className="text-white/60 font-body text-base mb-8 max-w-md mx-auto">
+                Stay up-to-date with Shiphaus events, chapters, and builds.
+              </p>
+
+              <form
+                onSubmit={handleSubmit}
+                className="max-w-lg mx-auto"
+              >
+                <div
+                  className={`flex flex-col sm:flex-row gap-3 rounded-xl transition-all ${
+                    error
+                      ? 'sm:bg-[#F59E0B]/[0.06] sm:ring-1 sm:ring-[#F59E0B]/30 sm:p-1.5'
+                      : ''
+                  }`}
+                >
                   <div className="flex-1">
                     <input
                       type="email"
                       value={email}
-                      onChange={(e) => setEmail(e.target.value)}
+                      onChange={(e) => {
+                        setEmail(e.target.value);
+                        if (error) setError(null);
+                      }}
                       placeholder="your@email.com"
                       disabled={isSubmitting}
-                      className="w-full px-4 py-3 rounded-lg border border-[var(--border-strong)] focus:outline-none focus:border-[var(--accent)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      className={`w-full px-4 py-3.5 rounded-lg bg-white/10 border text-white placeholder:text-white/30 focus:outline-none focus:border-[var(--accent)] focus:bg-white/[0.14] transition-all disabled:opacity-50 disabled:cursor-not-allowed ${
+                        error
+                          ? 'border-[#F59E0B]/40 sm:border-white/[0.12]'
+                          : 'border-white/[0.12]'
+                      }`}
                       required
                     />
                   </div>
@@ -101,39 +114,38 @@ export function EmailCapture() {
                   >
                     {isSubmitting ? 'Submitting...' : "I'm in"}
                   </motion.button>
-                </form>
+                </div>
 
-                {error && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="mt-3 text-sm text-red-600 flex items-center justify-between"
-                  >
-                    <span>{error}</span>
-                    <button
-                      onClick={handleRetry}
-                      className="text-[var(--accent)] hover:underline font-medium"
+                <AnimatePresence>
+                  {error && (
+                    <motion.p
+                      initial={{ opacity: 0, y: -4 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -4 }}
+                      transition={{ duration: 0.2 }}
+                      className="mt-3 text-sm text-[#F59E0B]/70 text-center font-body"
                     >
-                      Retry
-                    </button>
-                  </motion.div>
-                )}
-              </motion.div>
-            ) : (
-              <motion.div
-                key="success"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: 0.2 }}
-                className="text-center py-4"
-              >
-                <p className="text-xl font-semibold text-[var(--text-primary)]">
-                  You're in 🤝
-                </p>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </motion.div>
+                      {error}
+                    </motion.p>
+                  )}
+                </AnimatePresence>
+              </form>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="success"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.4, type: 'spring', stiffness: 200, damping: 20 }}
+              className="text-center py-2"
+            >
+              <p className="text-lg text-white/40 font-body mb-1">Welcome aboard</p>
+              <p className="text-2xl font-bold text-white">
+                You're in 🤝
+              </p>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </section>
   );
