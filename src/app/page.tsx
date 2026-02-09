@@ -41,7 +41,7 @@ function HeroSection() {
               transition={{ duration: 0.6 }}
               className="text-5xl md:text-6xl font-bold tracking-tight mb-6 leading-[1.1]"
             >
-              Start at 10. Ship by <span className="text-[var(--accent)]">5</span>.
+              Ideate, Plan, and <span className="text-[var(--accent)]">Ship</span> all in one day.
             </motion.h1>
 
             <motion.p
@@ -50,7 +50,7 @@ function HeroSection() {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="text-xl text-[var(--text-secondary)] font-body leading-relaxed mb-8 max-w-xl"
             >
-              Builders helping builders ship.
+              Builders will help you along the way.
             </motion.p>
 
             <motion.div
