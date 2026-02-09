@@ -41,7 +41,7 @@ function HeroSection() {
               transition={{ duration: 0.6 }}
               className="text-5xl md:text-6xl font-bold tracking-tight mb-6 leading-[1.1]"
             >
-              Ideate, Plan, and <span className="text-[var(--accent)]">Ship</span> all in one day.
+              Ideate, Plan, and <span className="text-[var(--accent)]">Ship</span>, all in one day.
             </motion.h1>
 
             <motion.p
