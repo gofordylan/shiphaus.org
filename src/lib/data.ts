@@ -86,6 +86,17 @@ export const events: Event[] = [
     builderCount: 6,
     projectCount: 6,
   },
+  {
+    id: 'ns-shiphaus-feb-2026',
+    chapterId: 'malaysia',
+    title: 'Shiphaus NS #1',
+    date: '2026-02-13T10:00:00',
+    location: 'NS Library',
+    builderCount: 0,
+    projectCount: 0,
+    status: 'upcoming',
+    lumaUrl: 'https://lu.ma/1vaocqic',
+  },
 ];
 
 export const projects: Project[] = [
