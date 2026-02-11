@@ -13,6 +13,8 @@ import { chapters, projects as staticProjects, events, testimonials, getUpcoming
 import { Project } from '@/types';
 
 function HeroSection() {
+  const upcoming = getUpcomingEvents();
+
   return (
     <section className="hero-pattern relative overflow-hidden -mt-16 pt-16">
       {/* Decorative elements */}
@@ -59,11 +61,10 @@ function HeroSection() {
               transition={{ duration: 0.6, delay: 0.3 }}
               className="flex flex-col gap-3"
             >
-              {getUpcomingEvents().map((event, index) => {
+              {upcoming.map((event, index) => {
                 const d = new Date(event.date);
                 const month = d.toLocaleDateString('en-US', { month: 'short' }).toUpperCase();
                 const day = d.getDate();
-                const isNext = index === 0;
                 const chapter = chapters.find(c => c.id === event.chapterId);
                 const colorVar = chapter ? `var(--${chapter.color})` : 'var(--accent)';
 
@@ -77,11 +78,7 @@ function HeroSection() {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.5, delay: 0.4 + index * 0.15 }}
                     whileHover={{ y: -2 }}
-                    className={`group relative flex items-center gap-4 rounded-xl border overflow-hidden transition-all duration-300 ${
-                      isNext
-                        ? 'bg-white shadow-md hover:shadow-lg border-[var(--border-strong)] p-4'
-                        : 'bg-white/70 hover:bg-white border-[var(--border-subtle)] hover:shadow-md p-3'
-                    }`}
+                    className="group relative flex items-center gap-4 rounded-xl border overflow-hidden transition-all duration-300 bg-white/70 hover:bg-white border-[var(--border-subtle)] hover:shadow-md p-3"
                   >
                     {/* Chapter color accent bar */}
                     <div
@@ -89,18 +86,10 @@ function HeroSection() {
                       style={{ backgroundColor: colorVar }}
                     />
 
-                    {/* Subtle glow for first event */}
-                    {isNext && (
-                      <div
-                        className="absolute -left-10 top-1/2 -translate-y-1/2 w-20 h-20 rounded-full blur-2xl opacity-20 pointer-events-none"
-                        style={{ backgroundColor: colorVar }}
-                      />
-                    )}
-
                     {/* Date block */}
                     <div className="shrink-0 w-12 text-center ml-2 relative">
                       <div className="text-[10px] font-bold tracking-[0.15em] text-[var(--text-muted)]">{month}</div>
-                      <div className={`font-bold leading-none ${isNext ? 'text-3xl' : 'text-2xl'}`}>{day}</div>
+                      <div className="text-2xl font-bold leading-none">{day}</div>
                     </div>
 
                     {/* Vertical divider */}
@@ -108,31 +97,24 @@ function HeroSection() {
 
                     {/* Event info */}
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-0.5">
-                        {isNext && (
-                          <span className="inline-flex items-center gap-1.5 text-[10px] font-bold tracking-widest uppercase text-[var(--accent)]">
-                            <span className="relative flex h-2 w-2">
-                              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--accent)] opacity-75" />
-                              <span className="relative inline-flex rounded-full h-2 w-2 bg-[var(--accent)]" />
-                            </span>
-                            Next up
-                          </span>
-                        )}
-                        <span className={`font-semibold truncate ${isNext ? 'text-base' : 'text-sm'}`}>{event.title}</span>
-                      </div>
+                      <span className="font-semibold text-sm truncate block mb-0.5">{event.title}</span>
                       <div className="flex items-center gap-1 text-[var(--text-muted)]">
                         <MapPin className="w-3 h-3 shrink-0" />
                         <span className="font-body text-sm truncate">{event.location}</span>
                       </div>
+                      {event.hostedBy && (
+                        <div className="flex items-center gap-1 mt-1 text-[var(--text-muted)]">
+                          <span className="font-body text-xs">
+                            Thanks for the space,{' '}
+                            <span className="font-display font-semibold text-[#393e82]">{event.hostedBy.name}</span>
+                          </span>
+                        </div>
+                      )}
                     </div>
 
                     {/* RSVP */}
                     {event.lumaUrl && (
-                      <span className={`shrink-0 inline-flex items-center gap-1.5 font-semibold rounded-lg transition-all duration-200 ${
-                        isNext
-                          ? 'bg-[var(--accent)] text-white px-4 py-2 text-sm group-hover:bg-[var(--accent-hover)] group-hover:shadow-md'
-                          : 'text-[var(--accent)] text-sm group-hover:bg-[var(--accent-soft)] px-3 py-1.5'
-                      }`}>
+                      <span className="shrink-0 inline-flex items-center gap-1.5 font-semibold rounded-lg transition-all duration-200 text-[var(--accent)] text-sm group-hover:bg-[var(--accent-soft)] px-3 py-1.5">
                         RSVP
                         <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
                       </span>

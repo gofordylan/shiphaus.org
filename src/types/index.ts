@@ -29,6 +29,11 @@ export interface Event {
   status?: EventStatus;
   lumaUrl?: string;
   imageUrl?: string;
+  hostedBy?: {
+    name: string;
+    url: string;
+    tagline?: string;
+  };
 }
 
 export type ProjectType = 'website' | 'application' | 'devtool' | 'video' | 'other';

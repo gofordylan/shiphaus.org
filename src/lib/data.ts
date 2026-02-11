@@ -107,6 +107,11 @@ export const events: Event[] = [
     projectCount: 0,
     status: 'upcoming',
     lumaUrl: 'https://luma.com/7m6wvfq3',
+    hostedBy: {
+      name: 'Asylum.vc',
+      url: 'https://www.asylum.vc/',
+      tagline: 'artists, not assets',
+    },
   },
 ];
 
