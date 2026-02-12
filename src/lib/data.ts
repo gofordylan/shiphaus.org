@@ -52,7 +52,7 @@ export const chapters: Chapter[] = [
   },
   {
     id: 'malaysia',
-    city: 'Network School',
+    city: 'Singapore',
     country: 'Malaysia',
     lead: {
       name: 'Dylan',

@@ -38,7 +38,7 @@ export default function StartAChapter() {
                 Active chapters
               </span>
               <div className="flex flex-wrap gap-2">
-                {['NYC', 'Chicago', 'Boulder', 'Forest City'].map((city) => (
+                {['NYC', 'Chicago', 'Boulder', 'Singapore'].map((city) => (
                   <span
                     key={city}
                     className="px-3 py-1.5 bg-[var(--text-primary)] text-white text-sm font-medium rounded-lg"
