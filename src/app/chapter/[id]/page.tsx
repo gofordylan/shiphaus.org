@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams } from 'next/navigation';
-import { SessionProvider, useSession, signIn, signOut } from 'next-auth/react';
+import { SessionProvider, useSession, signIn } from 'next-auth/react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Calendar, MapPin, Layers, Plus,
@@ -350,12 +350,6 @@ function ChapterContent() {
                                         Submit Project
                                       </button>
                                     )}
-                                    <button
-                                      onClick={() => signOut({ callbackUrl: `/chapter/${chapterId}` })}
-                                      className="text-xs text-[var(--text-muted)] hover:text-[var(--text-secondary)] cursor-pointer"
-                                    >
-                                      Sign out
-                                    </button>
                                   </div>
                                 ) : (
                                   <button
