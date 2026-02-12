@@ -69,6 +69,7 @@ export interface Submission {
   deployedUrl?: string;
   githubUrl?: string;
   builderName: string;
+  builderAvatar?: string;
   submittedBy: string; // user email from session
   chapterId?: string;
   eventId?: string;

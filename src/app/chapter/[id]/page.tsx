@@ -598,7 +598,7 @@ function ProjectRow({ project }: { project: Project }) {
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1 text-xs font-medium text-[var(--accent)] hover:underline"
               >
-                <ExternalLink className="w-3 h-3" /> Live
+                <ExternalLink className="w-3 h-3" /> Site
               </a>
             )}
             {project.githubUrl && (

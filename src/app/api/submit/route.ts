@@ -72,6 +72,7 @@ export async function POST(request: NextRequest) {
       deployedUrl: deployedUrl.trim(),
       githubUrl: githubUrl?.trim() || undefined,
       builderName,
+      builderAvatar: session.user.image || undefined,
       submittedBy: session.user.email,
       chapterId: chapterId || undefined,
       eventId: eventId || undefined,
