@@ -433,58 +433,6 @@ function ChapterContent() {
                             </div>
                           </div>
 
-                          {/* Admin: inline submission management */}
-                          {showAdmin && (
-                            <div className="mt-4 pt-4 border-t border-[var(--border-subtle)]">
-                              <button
-                                onClick={() => toggleSubmissions(event.id)}
-                                className="flex items-center gap-2 text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider hover:text-[var(--text-primary)] cursor-pointer transition-colors"
-                              >
-                                Submissions ({eventSubs.length + eventProjects.length})
-                                {isSubmissionsExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
-                              </button>
-
-                              {isSubmissionsExpanded && (
-                                <div className="mt-3 space-y-2">
-                                  {eventSubs.length === 0 && eventProjects.length === 0 ? (
-                                    <p className="text-sm text-[var(--text-muted)] italic">No submissions yet</p>
-                                  ) : (
-                                    <>
-                                      {eventSubs.map(sub => (
-                                        <div key={sub.id} className="flex items-center justify-between bg-[var(--bg-secondary)] rounded-lg px-4 py-3">
-                                          <div className="flex-1 min-w-0">
-                                            <div className="flex items-center gap-2">
-                                              <span className="font-medium text-sm truncate">{sub.title}</span>
-                                            </div>
-                                            <p className="text-xs text-[var(--text-muted)]">
-                                              {sub.builderName} &middot; {sub.submittedBy || 'unknown'}
-                                            </p>
-                                          </div>
-                                          <div className="flex items-center gap-1 ml-3 shrink-0">
-                                            <button
-                                              onClick={() => handleDeleteSubmission(sub.id, event.id)}
-                                              className="p-1.5 rounded-lg text-[var(--text-muted)] hover:text-red-500 hover:bg-white transition-colors cursor-pointer"
-                                              title="Delete"
-                                            >
-                                              <Trash2 className="w-3.5 h-3.5" />
-                                            </button>
-                                          </div>
-                                        </div>
-                                      ))}
-                                      {eventProjects.length > 0 && (
-                                        <div className="grid sm:grid-cols-2 gap-4 mt-3">
-                                          {eventProjects.map((project) => (
-                                            <ProjectRow key={project.id} project={project} />
-                                          ))}
-                                        </div>
-                                      )}
-                                    </>
-                                  )}
-                                </div>
-                              )}
-                            </div>
-                          )}
-
                           {/* Projects section — visible to everyone */}
                           {(status === 'active' || displayProjects.length > 0) && (
                             <div className="mt-4 pt-4 border-t border-[var(--border-subtle)]">
@@ -502,12 +450,28 @@ function ChapterContent() {
                                     {displayProjects.map((project) => {
                                       const isOwner = session?.user?.email && project.approvedBy === session.user.email;
                                       const matchingSub = isOwner ? mySubmissions.find(s => project.id === `proj-${s.id.replace('sub-', '')}`) : undefined;
+                                      const canEdit = (isOwner && matchingSub && status === 'active') || isAdmin;
+                                      const canDelete = (isOwner && matchingSub) || isAdmin;
+                                      const subForEdit = matchingSub || (isAdmin ? {
+                                        id: project.id.replace('proj-', 'sub-'),
+                                        title: project.title,
+                                        description: project.description,
+                                        deployedUrl: project.deployedUrl,
+                                        githubUrl: project.githubUrl,
+                                        builderName: project.builder.name,
+                                        type: project.type || 'other',
+                                        submittedBy: project.approvedBy || '',
+                                        eventId: project.eventId,
+                                        chapterId: project.chapterId,
+                                        submittedAt: project.createdAt,
+                                        status: 'approved' as const,
+                                      } : undefined);
                                       return (
                                         <ProjectRow
                                           key={project.id}
                                           project={project}
-                                          onEdit={isOwner && matchingSub && status === 'active' ? () => setSubmitModal({ eventId: event.id, eventTitle: event.title, editSubmission: matchingSub }) : undefined}
-                                          onDelete={isOwner && matchingSub ? () => handleDeleteUserSubmission(matchingSub.id) : undefined}
+                                          onEdit={canEdit && subForEdit ? () => setSubmitModal({ eventId: event.id, eventTitle: event.title, editSubmission: subForEdit }) : undefined}
+                                          onDelete={canDelete ? () => handleDeleteUserSubmission(subForEdit?.id || project.id.replace('proj-', 'sub-')) : undefined}
                                         />
                                       );
                                     })}
