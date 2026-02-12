@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams } from 'next/navigation';
-import { SessionProvider, useSession, signIn } from 'next-auth/react';
+import { SessionProvider, useSession, signIn, signOut } from 'next-auth/react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Calendar, MapPin, Layers, Plus,
@@ -398,21 +398,29 @@ function ChapterContent() {
                               )}
                               {status === 'active' && !showAdmin && (
                                 session ? (
-                                  mySub ? (
+                                  <div className="flex flex-col items-end gap-1">
+                                    {mySub ? (
+                                      <button
+                                        onClick={() => setSubmitModal({ eventId: event.id, eventTitle: event.title, editSubmission: mySub })}
+                                        className="text-sm font-medium px-4 py-2 rounded-lg border border-[var(--border-strong)] text-[var(--text-secondary)] hover:bg-[var(--bg-secondary)] transition-colors cursor-pointer"
+                                      >
+                                        Edit Project
+                                      </button>
+                                    ) : (
+                                      <button
+                                        onClick={() => setSubmitModal({ eventId: event.id, eventTitle: event.title })}
+                                        className="btn-primary text-sm !px-5 !py-2"
+                                      >
+                                        Submit Project
+                                      </button>
+                                    )}
                                     <button
-                                      onClick={() => setSubmitModal({ eventId: event.id, eventTitle: event.title, editSubmission: mySub })}
-                                      className="text-sm font-medium px-4 py-2 rounded-lg border border-[var(--border-strong)] text-[var(--text-secondary)] hover:bg-[var(--bg-secondary)] transition-colors cursor-pointer"
+                                      onClick={() => signOut({ callbackUrl: `/chapter/${chapterId}` })}
+                                      className="text-xs text-[var(--text-muted)] hover:text-[var(--text-secondary)] cursor-pointer"
                                     >
-                                      Edit Project
+                                      Sign out
                                     </button>
-                                  ) : (
-                                    <button
-                                      onClick={() => setSubmitModal({ eventId: event.id, eventTitle: event.title })}
-                                      className="btn-primary text-sm !px-5 !py-2"
-                                    >
-                                      Submit Project
-                                    </button>
-                                  )
+                                  </div>
                                 ) : (
                                   <button
                                     onClick={() => signIn('google', { callbackUrl: `/chapter/${chapterId}` })}
