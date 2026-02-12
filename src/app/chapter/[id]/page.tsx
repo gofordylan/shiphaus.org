@@ -326,7 +326,7 @@ function ChapterContent() {
                                   <MapPin className="w-3.5 h-3.5 text-[var(--text-muted)]" />
                                   {event.location}
                                 </span>
-                                {status === 'closed' && eventProjects.length > 0 && (
+                                {eventProjects.length > 0 && (
                                   <span className="inline-flex items-center gap-1.5">
                                     <Layers className="w-3.5 h-3.5 text-[var(--text-muted)]" />
                                     {eventProjects.length} project{eventProjects.length !== 1 ? 's' : ''}
