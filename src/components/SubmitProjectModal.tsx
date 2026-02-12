@@ -3,13 +3,13 @@
 import { useState, FormEvent } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
-import { Project, Submission } from '@/types';
+import { Project } from '@/types';
 
 interface SubmitProjectModalProps {
   eventId: string;
   eventName: string;
   chapterId: string;
-  initialData?: Submission;
+  initialData?: Project;
   onClose: () => void;
   onSubmitted: (project?: Project) => void;
 }
@@ -30,7 +30,7 @@ export function SubmitProjectModal({ eventId, eventName, chapterId, initialData,
 
     try {
       if (isEdit) {
-        const res = await fetch(`/api/submissions/${initialData.id}`, {
+        const res = await fetch(`/api/projects/${initialData.id}`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -99,7 +99,7 @@ export function SubmitProjectModal({ eventId, eventName, chapterId, initialData,
           {/* Header */}
           <div className="sticky top-0 bg-white rounded-t-2xl border-b border-[var(--border-subtle)] px-6 py-4 flex items-center justify-between z-10">
             <div>
-              <h2 className="text-lg font-bold">{isEdit ? 'Edit Submission' : 'Submit Your Project'}</h2>
+              <h2 className="text-lg font-bold">{isEdit ? 'Edit Project' : 'Submit Your Project'}</h2>
               <p className="text-sm text-[var(--text-muted)] font-body">{eventName}</p>
             </div>
             <button

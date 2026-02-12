@@ -38,8 +38,6 @@ export interface Event {
 
 export type ProjectType = 'website' | 'application' | 'devtool' | 'video' | 'other';
 
-export type SubmissionStatus = 'pending' | 'approved' | 'rejected';
-
 export interface Project {
   id: string;
   title: string;
@@ -56,25 +54,7 @@ export interface Project {
   };
   type?: ProjectType;
   featured?: boolean;
-  status?: SubmissionStatus;
-  approvedAt?: string;
-  approvedBy?: string;
-}
-
-export interface Submission {
-  id: string;
-  title: string;
-  description: string;
-  type: ProjectType;
-  deployedUrl?: string;
-  githubUrl?: string;
-  builderName: string;
-  builderAvatar?: string;
-  submittedBy: string; // user email from session
-  chapterId?: string;
-  eventId?: string;
-  submittedAt: string;
-  status: SubmissionStatus;
+  submittedBy?: string;
 }
 
 export interface Testimonial {

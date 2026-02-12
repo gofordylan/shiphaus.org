@@ -284,9 +284,7 @@ async function seed() {
       builder: JSON.stringify(project.builder),
       type: '',
       featured: isFeatured ? '1' : '0',
-      status: 'approved',
-      approvedAt: '',
-      approvedBy: '',
+      submittedBy: '',
     };
 
     const pipeline = redis.pipeline();

@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { redis } from '@/lib/redis';
 import { auth } from '@/lib/auth';
-import { createSubmission, approveSubmission } from '@/lib/redis-data';
-import { Submission } from '@/types';
+import { createProject } from '@/lib/redis-data';
+import { Project } from '@/types';
 
 const RATE_LIMIT_WINDOW = 60;
 const RATE_LIMIT_MAX = 3;
@@ -64,23 +64,26 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid source link URL.' }, { status: 400 });
     }
 
-    const submission: Submission = {
-      id: `sub-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+    const project: Project = {
+      id: `proj-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
       title: title.trim(),
       description: description.trim(),
-      type: 'other',
       deployedUrl: deployedUrl.trim(),
       githubUrl: githubUrl?.trim() || undefined,
-      builderName,
-      builderAvatar: session.user.image || undefined,
-      submittedBy: session.user.email,
-      chapterId: chapterId || undefined,
+      createdAt: new Date().toISOString(),
+      chapterId: chapterId || '',
       eventId: eventId || undefined,
-      submittedAt: new Date().toISOString(),
-      status: 'pending',
+      builder: {
+        name: builderName,
+        avatar: session.user.image || `https://api.dicebear.com/7.x/notionists/svg?seed=${encodeURIComponent(builderName)}&backgroundColor=c0aede`,
+        uid: builderName.toLowerCase().replace(/\s+/g, '-'),
+      },
+      type: 'other',
+      featured: false,
+      submittedBy: session.user.email,
     };
 
-    await createSubmission(submission);
+    await createProject(project);
 
     // Auto-subscribe submitter
     redis.sadd('subscribers', session.user.email).catch(() => {});
@@ -88,14 +91,6 @@ export async function POST(request: NextRequest) {
       email: session.user.email,
       timestamp: new Date().toISOString(),
     }).catch(() => {});
-
-    // Auto-approve: immediately create the project
-    const project = await approveSubmission(
-      submission.id,
-      session.user.email,
-      submission.chapterId,
-      submission.eventId,
-    );
 
     return NextResponse.json({ success: true, project });
   } catch (error) {

@@ -1,5 +1,5 @@
 import { redis } from './redis';
-import { Project, Event, Submission, SubmissionStatus } from '@/types';
+import { Project, Event } from '@/types';
 
 // ─── Key Helpers ─────────────────────────────────────────────
 
@@ -12,10 +12,6 @@ const KEYS = {
   events: 'shiphaus:events',
   event: (id: string) => `shiphaus:event:${id}`,
   eventsByChapter: (chapterId: string) => `shiphaus:events:chapter:${chapterId}`,
-  submissions: 'shiphaus:submissions:pending',
-  submission: (id: string) => `shiphaus:submission:${id}`,
-  submissionsByEvent: (eventId: string) => `shiphaus:submissions:event:${eventId}`,
-  submissionsByUser: (email: string) => `shiphaus:submissions:user:${email}`,
 };
 
 // ─── Serialization helpers ───────────────────────────────────
@@ -33,9 +29,7 @@ function serializeProject(project: Project): Record<string, string> {
     builder: JSON.stringify(project.builder),
     type: project.type || '',
     featured: project.featured ? '1' : '0',
-    status: project.status || 'approved',
-    approvedAt: project.approvedAt || '',
-    approvedBy: project.approvedBy || '',
+    submittedBy: project.submittedBy || '',
   };
 }
 
@@ -52,9 +46,7 @@ function deserializeProject(data: Record<string, string>): Project {
     builder: JSON.parse(data.builder),
     type: data.type || undefined,
     featured: data.featured === '1',
-    status: (data.status as SubmissionStatus) || undefined,
-    approvedAt: data.approvedAt || undefined,
-    approvedBy: data.approvedBy || undefined,
+    submittedBy: data.submittedBy || data.approvedBy || undefined,
   } as Project;
 }
 
@@ -87,42 +79,6 @@ function deserializeEvent(data: Record<string, string>): Event {
     lumaUrl: data.lumaUrl || undefined,
     imageUrl: data.imageUrl || undefined,
   } as Event;
-}
-
-function serializeSubmission(sub: Submission): Record<string, string> {
-  return {
-    id: sub.id,
-    title: sub.title,
-    description: sub.description,
-    type: sub.type,
-    deployedUrl: sub.deployedUrl || '',
-    githubUrl: sub.githubUrl || '',
-    builderName: sub.builderName,
-    builderAvatar: sub.builderAvatar || '',
-    submittedBy: sub.submittedBy || '',
-    chapterId: sub.chapterId || '',
-    eventId: sub.eventId || '',
-    submittedAt: sub.submittedAt,
-    status: sub.status,
-  };
-}
-
-function deserializeSubmission(data: Record<string, string>): Submission {
-  return {
-    id: data.id,
-    title: data.title,
-    description: data.description,
-    type: data.type,
-    deployedUrl: data.deployedUrl || undefined,
-    githubUrl: data.githubUrl || undefined,
-    builderName: data.builderName,
-    builderAvatar: data.builderAvatar || undefined,
-    submittedBy: data.submittedBy || '',
-    chapterId: data.chapterId || undefined,
-    eventId: data.eventId || undefined,
-    submittedAt: data.submittedAt,
-    status: data.status as SubmissionStatus,
-  } as Submission;
 }
 
 // ─── Projects ────────────────────────────────────────────────
@@ -239,22 +195,6 @@ export async function toggleFeatured(id: string): Promise<boolean> {
   }
 }
 
-// ─── All Projects (admin, includes non-approved) ─────────────
-
-export async function getAllProjectsAdmin(): Promise<Project[]> {
-  const ids = await redis.smembers(KEYS.projects);
-  if (!ids.length) return [];
-
-  const pipeline = redis.pipeline();
-  for (const id of ids) {
-    pipeline.hgetall(KEYS.project(id));
-  }
-  const results = await pipeline.exec();
-  return results
-    .filter((r): r is Record<string, string> => r !== null && typeof r === 'object')
-    .map(deserializeProject);
-}
-
 // ─── Events ──────────────────────────────────────────────────
 
 export async function getAllEvents(): Promise<Event[]> {
@@ -318,162 +258,22 @@ export async function deleteEvent(id: string): Promise<void> {
   await pipeline.exec();
 }
 
-// ─── Submissions ─────────────────────────────────────────────
-
-export async function createSubmission(submission: Submission): Promise<void> {
-  const pipeline = redis.pipeline();
-  pipeline.hset(KEYS.submission(submission.id), serializeSubmission(submission));
-  pipeline.zadd(KEYS.submissions, {
-    score: new Date(submission.submittedAt).getTime(),
-    member: submission.id,
-  });
-  if (submission.eventId) {
-    pipeline.sadd(KEYS.submissionsByEvent(submission.eventId), submission.id);
-  }
-  if (submission.submittedBy) {
-    pipeline.sadd(KEYS.submissionsByUser(submission.submittedBy), submission.id);
-  }
-  await pipeline.exec();
-}
-
-export async function getPendingSubmissions(): Promise<Submission[]> {
-  const ids = await redis.zrange(KEYS.submissions, 0, -1);
-  if (!ids.length) return [];
-
-  const pipeline = redis.pipeline();
-  for (const id of ids) {
-    pipeline.hgetall(KEYS.submission(id as string));
-  }
-  const results = await pipeline.exec();
-  return results
-    .filter((r): r is Record<string, string> => r !== null && typeof r === 'object')
-    .map(deserializeSubmission)
-    .filter(s => s.status === 'pending');
-}
-
-export async function getSubmissionById(id: string): Promise<Submission | null> {
-  const data = await redis.hgetall(KEYS.submission(id));
-  if (!data || Object.keys(data).length === 0) return null;
-  return deserializeSubmission(data as Record<string, string>);
-}
-
-export async function getSubmissionsByEvent(eventId: string): Promise<Submission[]> {
-  const ids = await redis.smembers(KEYS.submissionsByEvent(eventId));
-  if (!ids.length) return [];
-
-  const pipeline = redis.pipeline();
-  for (const id of ids) {
-    pipeline.hgetall(KEYS.submission(id));
-  }
-  const results = await pipeline.exec();
-  return results
-    .filter((r): r is Record<string, string> => r !== null && typeof r === 'object')
-    .map(deserializeSubmission);
-}
-
-export async function getSubmissionsByUser(email: string): Promise<Submission[]> {
-  const ids = await redis.smembers(KEYS.submissionsByUser(email));
-  if (!ids.length) return [];
-
-  const pipeline = redis.pipeline();
-  for (const id of ids) {
-    pipeline.hgetall(KEYS.submission(id));
-  }
-  const results = await pipeline.exec();
-  return results
-    .filter((r): r is Record<string, string> => r !== null && typeof r === 'object')
-    .map(deserializeSubmission);
-}
-
-export async function updateSubmission(id: string, updates: Partial<Submission>): Promise<void> {
-  const existing = await getSubmissionById(id);
-  if (!existing) throw new Error(`Submission ${id} not found`);
-
-  const updated = { ...existing, ...updates };
-  await redis.hset(KEYS.submission(id), serializeSubmission(updated));
-}
-
-export async function deleteSubmission(id: string): Promise<void> {
-  const submission = await getSubmissionById(id);
-  if (!submission) return;
-
-  const pipeline = redis.pipeline();
-  pipeline.del(KEYS.submission(id));
-  pipeline.zrem(KEYS.submissions, id);
-  if (submission.eventId) {
-    pipeline.srem(KEYS.submissionsByEvent(submission.eventId), id);
-  }
-  if (submission.submittedBy) {
-    pipeline.srem(KEYS.submissionsByUser(submission.submittedBy), id);
-  }
-  await pipeline.exec();
-}
-
-export async function approveSubmission(
-  submissionId: string,
-  approvedBy: string,
-  chapterId?: string,
-  eventId?: string,
-): Promise<Project> {
-  const submission = await getSubmissionById(submissionId);
-  if (!submission) throw new Error(`Submission ${submissionId} not found`);
-
-  // Update submission status
-  await redis.hset(KEYS.submission(submissionId), { status: 'approved' });
-  await redis.zrem(KEYS.submissions, submissionId);
-
-  // Create project from submission
-  const projectId = `proj-${submissionId.replace('sub-', '')}`;
-  const finalChapterId = chapterId || submission.chapterId || 'new-york';
-  const project: Project = {
-    id: projectId,
-    title: submission.title,
-    description: submission.description,
-    deployedUrl: submission.deployedUrl,
-    githubUrl: submission.githubUrl,
-    createdAt: submission.submittedAt,
-    chapterId: finalChapterId,
-    eventId: eventId || submission.eventId,
-    builder: {
-      name: submission.builderName,
-      avatar: submission.builderAvatar || `https://api.dicebear.com/7.x/notionists/svg?seed=${encodeURIComponent(submission.builderName)}&backgroundColor=c0aede`,
-      uid: submission.builderName.toLowerCase().replace(/\s+/g, '-'),
-    },
-    type: submission.type,
-    featured: false,
-    status: 'approved',
-    approvedAt: new Date().toISOString(),
-    approvedBy,
-  };
-
-  await createProject(project);
-  return project;
-}
-
-export async function rejectSubmission(submissionId: string): Promise<void> {
-  await redis.hset(KEYS.submission(submissionId), { status: 'rejected' });
-  await redis.zrem(KEYS.submissions, submissionId);
-}
-
 // ─── Stats ───────────────────────────────────────────────────
 
 export async function getStats(): Promise<{
   totalProjects: number;
   featuredProjects: number;
   totalEvents: number;
-  pendingSubmissions: number;
 }> {
-  const [totalProjects, featuredProjects, totalEvents, pendingSubmissions] = await Promise.all([
+  const [totalProjects, featuredProjects, totalEvents] = await Promise.all([
     redis.scard(KEYS.projects),
     redis.scard(KEYS.featuredProjects),
     redis.scard(KEYS.events),
-    redis.zcard(KEYS.submissions),
   ]);
 
   return {
     totalProjects,
     featuredProjects,
     totalEvents,
-    pendingSubmissions,
   };
 }

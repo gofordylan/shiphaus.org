@@ -13,7 +13,7 @@ import {
 import Link from 'next/link';
 import { getChapter, getChapterEvents, getChapterProjects, chapterColorMap } from '@/lib/data';
 import { SubmitProjectModal } from '@/components/SubmitProjectModal';
-import { Project, Event, EventStatus, Submission } from '@/types';
+import { Project, Event, EventStatus } from '@/types';
 
 function ChapterContent() {
   const params = useParams();
@@ -28,9 +28,7 @@ function ChapterContent() {
 
   const [projects, setProjects] = useState<Project[]>(staticProjects);
   const [events, setEvents] = useState<Event[]>(staticEvents);
-  const [submissions, setSubmissions] = useState<Record<string, Submission[]>>({});
-  const [userSubmissions, setUserSubmissions] = useState<Submission[]>([]);
-  const [submitModal, setSubmitModal] = useState<{ eventId: string; eventTitle: string; editSubmission?: Submission } | null>(null);
+  const [submitModal, setSubmitModal] = useState<{ eventId: string; eventTitle: string; editProject?: Project } | null>(null);
   const [editingEvent, setEditingEvent] = useState<string | null>(null);
   const [showNewEvent, setShowNewEvent] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -48,31 +46,7 @@ function ChapterContent() {
       .catch(() => {});
   }, [chapterId]);
 
-  const fetchUserSubmissions = useCallback(() => {
-    if (!session?.user?.email) return;
-    fetch('/api/submissions')
-      .then(r => r.json())
-      .then((data: Submission[]) => setUserSubmissions(data))
-      .catch(() => {});
-  }, [session?.user?.email]);
-
-  const fetchEventSubmissions = useCallback((eventId: string) => {
-    fetch(`/api/admin/submissions?event=${eventId}`)
-      .then(r => r.json())
-      .then((data: Submission[]) => {
-        setSubmissions(prev => ({ ...prev, [eventId]: data }));
-      })
-      .catch(() => {});
-  }, []);
-
   useEffect(() => { fetchData(); }, [fetchData]);
-  useEffect(() => { fetchUserSubmissions(); }, [fetchUserSubmissions]);
-
-  // Admin: pre-fetch all submissions for each event so counts are accurate
-  useEffect(() => {
-    if (!isAdmin) return;
-    events.forEach(e => fetchEventSubmissions(e.id));
-  }, [isAdmin, events, fetchEventSubmissions]);
 
   if (!chapter) {
     return (
@@ -89,10 +63,6 @@ function ChapterContent() {
 
   function getEventProjects(eventId: string) {
     return projects.filter(p => p.eventId === eventId);
-  }
-
-  function getUserSubmissionsForEvent(eventId: string) {
-    return userSubmissions.filter(s => s.eventId === eventId);
   }
 
   const sortedEvents = [...events].sort(
@@ -147,19 +117,10 @@ function ChapterContent() {
     } catch {}
   }
 
-  async function handleDeleteSubmission(submissionId: string, eventId: string) {
+  async function handleDeleteProject(projectId: string) {
     try {
-      await fetch(`/api/admin/submissions/${submissionId}`, { method: 'DELETE' });
-      fetchEventSubmissions(eventId);
-      fetchData();
-    } catch {}
-  }
-
-  async function handleDeleteUserSubmission(submissionId: string) {
-    try {
-      await fetch(`/api/submissions/${submissionId}`, { method: 'DELETE' });
-      fetchUserSubmissions();
-      fetchData();
+      await fetch(`/api/projects/${projectId}`, { method: 'DELETE' });
+      setProjects(prev => prev.filter(p => p.id !== projectId));
       setSuccessMessage('Project removed.');
       setTimeout(() => setSuccessMessage(null), 3000);
     } catch {}
@@ -176,11 +137,7 @@ function ChapterContent() {
   }
 
   function toggleSubmissions(eventId: string) {
-    const isExpanded = expandedSubmissions[eventId];
-    setExpandedSubmissions(prev => ({ ...prev, [eventId]: !isExpanded }));
-    if (!isExpanded && !submissions[eventId]) {
-      fetchEventSubmissions(eventId);
-    }
+    setExpandedSubmissions(prev => ({ ...prev, [eventId]: !prev[eventId] }));
   }
 
   function formatEventDate(date: string) {
@@ -276,38 +233,10 @@ function ChapterContent() {
           {/* Event list */}
           <div className="space-y-10">
             {sortedEvents.map((event, index) => {
-              const eventProjects = getEventProjects(event.id);
+              const displayProjects = getEventProjects(event.id);
               const status = event.status || 'closed';
-              const mySubmissions = getUserSubmissionsForEvent(event.id);
-              const eventSubs = submissions[event.id] || [];
               const isSubmissionsExpanded = expandedSubmissions[event.id];
-              const mySub = mySubmissions[0]; // user's submission for this event (if any)
-
-              // Build display projects: API projects + fallback from submissions
-              const displayProjects = [...eventProjects];
-              const allSubs = isAdmin ? [...mySubmissions, ...eventSubs.filter(s => !mySubmissions.some(ms => ms.id === s.id))] : mySubmissions;
-              for (const sub of allSubs) {
-                const projId = `proj-${sub.id.replace('sub-', '')}`;
-                if (!displayProjects.some(p => p.id === projId)) {
-                  displayProjects.push({
-                    id: projId,
-                    title: sub.title,
-                    description: sub.description,
-                    deployedUrl: sub.deployedUrl,
-                    githubUrl: sub.githubUrl,
-                    createdAt: sub.submittedAt,
-                    chapterId,
-                    eventId: sub.eventId,
-                    builder: {
-                      name: sub.builderName,
-                      avatar: sub.builderAvatar || `https://api.dicebear.com/7.x/notionists/svg?seed=${encodeURIComponent(sub.builderName)}`,
-                      uid: sub.builderName.toLowerCase().replace(/\s+/g, '-'),
-                    },
-                    type: sub.type,
-                    approvedBy: sub.submittedBy || session?.user?.email || '',
-                  });
-                }
-              }
+              const myProject = displayProjects.find(p => p.submittedBy === session?.user?.email);
 
               return (
                 <motion.div
@@ -406,9 +335,9 @@ function ChapterContent() {
                               {status === 'active' && !showAdmin && (
                                 session ? (
                                   <div className="flex flex-col items-end gap-1">
-                                    {mySub ? (
+                                    {myProject ? (
                                       <button
-                                        onClick={() => setSubmitModal({ eventId: event.id, eventTitle: event.title, editSubmission: mySub })}
+                                        onClick={() => setSubmitModal({ eventId: event.id, eventTitle: event.title, editProject: myProject })}
                                         className="text-sm font-medium px-4 py-2 rounded-lg border border-[var(--border-strong)] text-[var(--text-secondary)] hover:bg-[var(--bg-secondary)] transition-colors cursor-pointer"
                                       >
                                         Edit Project
@@ -455,32 +384,15 @@ function ChapterContent() {
                                 displayProjects.length > 0 ? (
                                   <div className="grid sm:grid-cols-2 gap-4 mt-3">
                                     {displayProjects.map((project) => {
-                                      const isOwner = session?.user?.email && project.approvedBy === session.user.email;
-                                      const matchingSub = isOwner
-                                        ? mySubmissions.find(s => project.id === `proj-${s.id.replace('sub-', '')}`)
-                                        : isAdmin ? eventSubs.find(s => project.id === `proj-${s.id.replace('sub-', '')}`) : undefined;
-                                      const canEdit = (isOwner && matchingSub && status === 'active') || isAdmin;
-                                      const canDelete = (isOwner && matchingSub) || isAdmin;
-                                      const subForEdit = matchingSub || (isAdmin ? {
-                                        id: project.id.replace('proj-', 'sub-'),
-                                        title: project.title,
-                                        description: project.description,
-                                        deployedUrl: project.deployedUrl,
-                                        githubUrl: project.githubUrl,
-                                        builderName: project.builder.name,
-                                        type: project.type || 'other',
-                                        submittedBy: project.approvedBy || '',
-                                        eventId: project.eventId,
-                                        chapterId: project.chapterId,
-                                        submittedAt: project.createdAt,
-                                        status: 'approved' as const,
-                                      } : undefined);
+                                      const isOwner = session?.user?.email && project.submittedBy === session.user.email;
+                                      const canEdit = (isOwner && status === 'active') || isAdmin;
+                                      const canDelete = isOwner || isAdmin;
                                       return (
                                         <ProjectRow
                                           key={project.id}
                                           project={project}
-                                          onEdit={canEdit && subForEdit ? () => setSubmitModal({ eventId: event.id, eventTitle: event.title, editSubmission: subForEdit }) : undefined}
-                                          onDelete={canDelete ? () => handleDeleteUserSubmission(subForEdit?.id || project.id.replace('proj-', 'sub-')) : undefined}
+                                          onEdit={canEdit ? () => setSubmitModal({ eventId: event.id, eventTitle: event.title, editProject: project }) : undefined}
+                                          onDelete={canDelete ? () => handleDeleteProject(project.id) : undefined}
                                         />
                                       );
                                     })}
@@ -574,7 +486,7 @@ function ChapterContent() {
           eventId={submitModal.eventId}
           eventName={submitModal.eventTitle}
           chapterId={chapterId}
-          initialData={submitModal.editSubmission}
+          initialData={submitModal.editProject}
           onClose={() => setSubmitModal(null)}
           onSubmitted={handleSubmitted}
         />

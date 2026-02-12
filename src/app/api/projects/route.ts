@@ -1,32 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAllProjects, getProjectsByChapter, getProjectsByEvent, getSubmissionsByEvent, getEventsByChapter } from '@/lib/redis-data';
-import { getChapterEvents } from '@/lib/data';
-import { Project, ProjectType } from '@/types';
+import { getAllProjects, getProjectsByChapter, getProjectsByEvent } from '@/lib/redis-data';
 
 export const dynamic = 'force-dynamic';
-
-// Convert a submission to a Project for display
-function submissionToProject(sub: { id: string; title: string; description: string; deployedUrl?: string; githubUrl?: string; builderName: string; builderAvatar?: string; submittedBy?: string; chapterId?: string; eventId?: string; submittedAt: string; type: string }): Project {
-  return {
-    id: `proj-${sub.id.replace('sub-', '')}`,
-    title: sub.title,
-    description: sub.description,
-    deployedUrl: sub.deployedUrl,
-    githubUrl: sub.githubUrl,
-    createdAt: sub.submittedAt,
-    chapterId: sub.chapterId || '',
-    eventId: sub.eventId,
-    builder: {
-      name: sub.builderName,
-      avatar: sub.builderAvatar || `https://api.dicebear.com/7.x/notionists/svg?seed=${encodeURIComponent(sub.builderName)}`,
-      uid: sub.builderName.toLowerCase().replace(/\s+/g, '-'),
-    },
-    type: sub.type as ProjectType,
-    featured: false,
-    status: 'approved',
-    approvedBy: sub.submittedBy || '',
-  };
-}
 
 export async function GET(request: NextRequest) {
   try {
@@ -34,48 +9,13 @@ export async function GET(request: NextRequest) {
     const chapter = searchParams.get('chapter');
     const event = searchParams.get('event');
 
-    let projects: Project[];
     if (chapter) {
-      projects = await getProjectsByChapter(chapter);
-
-      // Also merge in submissions that may not have a matching project
-      try {
-        const hardcodedEvents = getChapterEvents(chapter);
-        const redisEvents = await getEventsByChapter(chapter);
-        const seen = new Set(hardcodedEvents.map(e => e.id));
-        const events = [...hardcodedEvents, ...redisEvents.filter(e => !seen.has(e.id))];
-        console.log('[projects] chapter=%s hardcoded=%d redis=%d total=%d', chapter, hardcodedEvents.length, redisEvents.length, events.length);
-        for (const evt of events) {
-          const subs = await getSubmissionsByEvent(evt.id);
-          console.log('[projects] event=%s subs=%d', evt.id, subs.length);
-          for (const sub of subs) {
-            const projId = `proj-${sub.id.replace('sub-', '')}`;
-            if (!projects.some(p => p.id === projId)) {
-              projects.push(submissionToProject(sub));
-            }
-          }
-        }
-      } catch (err) {
-        console.error('[projects] merge error:', err);
-      }
+      return NextResponse.json(await getProjectsByChapter(chapter));
     } else if (event) {
-      projects = await getProjectsByEvent(event);
-
-      // Also merge in submissions for this event
-      try {
-        const subs = await getSubmissionsByEvent(event);
-        for (const sub of subs) {
-          const projId = `proj-${sub.id.replace('sub-', '')}`;
-          if (!projects.some(p => p.id === projId)) {
-            projects.push(submissionToProject(sub));
-          }
-        }
-      } catch {}
+      return NextResponse.json(await getProjectsByEvent(event));
     } else {
-      projects = await getAllProjects();
+      return NextResponse.json(await getAllProjects());
     }
-
-    return NextResponse.json(projects);
   } catch {
     return NextResponse.json([], { status: 200 });
   }
