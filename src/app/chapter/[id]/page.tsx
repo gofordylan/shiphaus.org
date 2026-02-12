@@ -439,8 +439,8 @@ function ChapterContent() {
                             </div>
                           )}
 
-                          {/* Non-admin: show projects in collapsible section */}
-                          {!showAdmin && eventProjects.length > 0 && (
+                          {/* Projects section — visible to everyone */}
+                          {(status === 'active' || eventProjects.length > 0) && (
                             <div className="mt-4 pt-4 border-t border-[var(--border-subtle)]">
                               <button
                                 onClick={() => toggleSubmissions(event.id)}
@@ -451,11 +451,15 @@ function ChapterContent() {
                               </button>
 
                               {isSubmissionsExpanded && (
-                                <div className="grid sm:grid-cols-2 gap-4 mt-3">
-                                  {eventProjects.map((project) => (
-                                    <ProjectRow key={project.id} project={project} />
-                                  ))}
-                                </div>
+                                eventProjects.length > 0 ? (
+                                  <div className="grid sm:grid-cols-2 gap-4 mt-3">
+                                    {eventProjects.map((project) => (
+                                      <ProjectRow key={project.id} project={project} />
+                                    ))}
+                                  </div>
+                                ) : (
+                                  <p className="text-sm text-[var(--text-muted)] font-body mt-3">No projects yet.</p>
+                                )
                               )}
                             </div>
                           )}
