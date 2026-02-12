@@ -37,11 +37,12 @@ function ChapterContent() {
   const [expandedSubmissions, setExpandedSubmissions] = useState<Record<string, boolean>>({});
 
   const fetchData = useCallback(() => {
-    fetch(`/api/projects?chapter=${chapterId}`)
+    const t = Date.now();
+    fetch(`/api/projects?chapter=${chapterId}&t=${t}`)
       .then(r => r.json())
       .then((data: Project[]) => { if (data.length > 0) setProjects(data); })
       .catch(() => {});
-    fetch(`/api/events?chapter=${chapterId}`)
+    fetch(`/api/events?chapter=${chapterId}&t=${t}`)
       .then(r => r.json())
       .then((data: Event[]) => { if (data.length > 0) setEvents(data); })
       .catch(() => {});
@@ -158,11 +159,13 @@ function ChapterContent() {
     } catch {}
   }
 
-  function handleSubmitted() {
+  function handleSubmitted(project?: Project) {
     setSubmitModal(null);
     setSuccessMessage('Project submitted!');
     setTimeout(() => setSuccessMessage(null), 5000);
-    fetchUserSubmissions();
+    if (project) {
+      setProjects(prev => [...prev, project]);
+    }
     fetchData();
   }
 

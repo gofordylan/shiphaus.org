@@ -3,7 +3,7 @@
 import { useState, FormEvent } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
-import { Submission } from '@/types';
+import { Project, Submission } from '@/types';
 
 interface SubmitProjectModalProps {
   eventId: string;
@@ -11,7 +11,7 @@ interface SubmitProjectModalProps {
   chapterId: string;
   initialData?: Submission;
   onClose: () => void;
-  onSubmitted: () => void;
+  onSubmitted: (project?: Project) => void;
 }
 
 export function SubmitProjectModal({ eventId, eventName, chapterId, initialData, onClose, onSubmitted }: SubmitProjectModalProps) {
@@ -63,7 +63,7 @@ export function SubmitProjectModal({ eventId, eventName, chapterId, initialData,
 
         const data = await res.json();
         if (res.ok) {
-          onSubmitted();
+          onSubmitted(data.project);
         } else {
           setError(data.error || 'Something went wrong.');
         }

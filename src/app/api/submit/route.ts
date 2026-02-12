@@ -89,14 +89,14 @@ export async function POST(request: NextRequest) {
     }).catch(() => {});
 
     // Auto-approve: immediately create the project
-    await approveSubmission(
+    const project = await approveSubmission(
       submission.id,
       session.user.email,
       submission.chapterId,
       submission.eventId,
     );
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ success: true, project });
   } catch (error) {
     console.error('Submission error:', error);
     return NextResponse.json(
