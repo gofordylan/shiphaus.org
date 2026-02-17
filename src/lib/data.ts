@@ -113,6 +113,21 @@ export const events: Event[] = [
       tagline: 'artists, not assets',
     },
   },
+  {
+    id: 'chicago-shiphaus-1-feb-2026',
+    chapterId: 'chicago',
+    title: 'Shiphaus CHI #1',
+    date: '2026-02-28T10:00:00',
+    location: 'Chicago, IL',
+    builderCount: 0,
+    projectCount: 0,
+    status: 'upcoming',
+    lumaUrl: 'https://luma.com/7ycej8br',
+    hostedBy: {
+      name: 'Portal Innovations',
+      url: 'https://www.portalinnovations.com/',
+    },
+  },
 ];
 
 export const projects: Project[] = [
