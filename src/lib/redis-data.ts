@@ -64,14 +64,18 @@ function serializeEvent(event: Event): Record<string, string> {
     status: event.status || 'closed',
     lumaUrl: event.lumaUrl || '',
     imageUrl: event.imageUrl || '',
+    hostedBy: event.hostedBy ? JSON.stringify(event.hostedBy) : '',
   };
 }
 
 function deserializeEvent(data: Record<string, string>): Event {
+  let hostedBy: Event['hostedBy'] | undefined;
+  if (data.hostedBy) {
+    hostedBy = typeof data.hostedBy === 'string' ? JSON.parse(data.hostedBy) : data.hostedBy as unknown as Event['hostedBy'];
+  }
   return {
     id: data.id,
     chapterId: data.chapterId,
-    // Backward compat: fall back to `name` if `title` missing
     title: data.title || data.name || '',
     date: data.date,
     location: data.location,
@@ -80,6 +84,7 @@ function deserializeEvent(data: Record<string, string>): Event {
     status: data.status || undefined,
     lumaUrl: data.lumaUrl || undefined,
     imageUrl: data.imageUrl || undefined,
+    hostedBy,
   } as Event;
 }
 

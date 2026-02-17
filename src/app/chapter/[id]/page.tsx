@@ -688,7 +688,7 @@ function EventForm({
 
       <div className="flex items-center gap-3">
         <button
-          onClick={() => { if (title && date && location) onSubmit({ title, date, location, lumaUrl: lumaUrl || undefined, imageUrl: imageUrl || undefined }); }}
+          onClick={() => { if (title && date && location) onSubmit({ title, date, location, lumaUrl: lumaUrl || '', imageUrl: imageUrl || '' }); }}
           className="btn-primary text-sm !px-5 !py-2"
         >
           {submitLabel}

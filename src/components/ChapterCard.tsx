@@ -4,17 +4,17 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ArrowRight, MapPin, Users, Calendar } from 'lucide-react';
 import { Chapter } from '@/types';
-import { chapterColorMap, getChapterEvents, getChapterProjects } from '@/lib/data';
+import { chapterColorMap } from '@/lib/data';
 
 interface ChapterCardProps {
   chapter: Chapter;
   index?: number;
+  eventCount?: number;
+  projectCount?: number;
 }
 
-export function ChapterCard({ chapter, index = 0 }: ChapterCardProps) {
+export function ChapterCard({ chapter, index = 0, eventCount = 0, projectCount = 0 }: ChapterCardProps) {
   const accentColor = chapterColorMap[chapter.color] || '#FF6B35';
-  const chapterEvents = getChapterEvents(chapter.id);
-  const chapterProjects = getChapterProjects(chapter.id);
 
   return (
     <motion.div
@@ -77,11 +77,11 @@ export function ChapterCard({ chapter, index = 0 }: ChapterCardProps) {
           <div className="flex items-center gap-6">
             <div className="flex items-center gap-2 text-sm text-[var(--text-secondary)]">
               <Users className="w-4 h-4" style={{ color: accentColor }} />
-              <span><strong>{chapterProjects.length}</strong> projects</span>
+              <span><strong>{projectCount}</strong> project{projectCount !== 1 ? 's' : ''}</span>
             </div>
             <div className="flex items-center gap-2 text-sm text-[var(--text-secondary)]">
               <Calendar className="w-4 h-4" style={{ color: accentColor }} />
-              <span><strong>{chapterEvents.length}</strong> events</span>
+              <span><strong>{eventCount}</strong> event{eventCount !== 1 ? 's' : ''}</span>
             </div>
           </div>
         </div>

@@ -9,12 +9,10 @@ import Image from 'next/image';
 import { ChapterCard } from '@/components/ChapterCard';
 import { ProjectCard } from '@/components/ProjectCard';
 import { EmailCapture } from '@/components/EmailCapture';
-import { chapters, projects as staticProjects, events, testimonials, getUpcomingEvents } from '@/lib/data';
-import { Project } from '@/types';
+import { chapters, projects as staticProjects, events as staticEvents, testimonials } from '@/lib/data';
+import { Event, Project } from '@/types';
 
-function HeroSection() {
-  const upcoming = getUpcomingEvents();
-
+function HeroSection({ upcoming, totalEvents }: { upcoming: Event[]; totalEvents: number }) {
   return (
     <section className="hero-pattern relative overflow-hidden -mt-16 pt-16">
       {/* Decorative elements */}
@@ -71,7 +69,7 @@ function HeroSection() {
                 return (
                   <motion.a
                     key={event.id}
-                    href={event.lumaUrl || '#'}
+                    href={event.lumaUrl || `/chapter/${event.chapterId}`}
                     target={event.lumaUrl ? '_blank' : undefined}
                     rel={event.lumaUrl ? 'noopener noreferrer' : undefined}
                     initial={{ opacity: 0, x: -20 }}
@@ -129,7 +127,7 @@ function HeroSection() {
               {[
                 { label: 'Projects Shipped', value: String(staticProjects.length) },
                 { label: 'Chapters', value: String(chapters.length) },
-                { label: 'Build Events', value: String(events.length) },
+                { label: 'Build Events', value: String(totalEvents) },
               ].map((stat, i) => (
                 <motion.div
                   key={i}
@@ -219,7 +217,7 @@ function ValuePropsSection() {
   );
 }
 
-function ChaptersSection() {
+function ChaptersSection({ allEvents, allProjects }: { allEvents: Event[]; allProjects: Project[] }) {
   return (
     <section id="chapters" className="py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -237,7 +235,13 @@ function ChaptersSection() {
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {chapters.map((chapter, index) => (
-            <ChapterCard key={chapter.id} chapter={chapter} index={index} />
+            <ChapterCard
+              key={chapter.id}
+              chapter={chapter}
+              index={index}
+              eventCount={allEvents.filter(e => e.chapterId === chapter.id).length}
+              projectCount={allProjects.filter(p => p.chapterId === chapter.id).length}
+            />
           ))}
         </div>
       </div>
@@ -381,9 +385,7 @@ function TestimonialsSection() {
   );
 }
 
-function CTASection() {
-  const upcoming = getUpcomingEvents();
-  const next = upcoming[0];
+function CTASection({ next }: { next: Event | null }) {
 
   return (
     <section className="py-20 bg-[#111111] text-white">
@@ -422,15 +424,47 @@ function CTASection() {
 }
 
 export default function Home() {
+  const [allEvents, setAllEvents] = useState<Event[]>(staticEvents);
+  const [allProjects, setAllProjects] = useState<Project[]>(staticProjects);
+
+  useEffect(() => {
+    fetch('/api/events')
+      .then(r => r.json())
+      .then((data: Event[]) => {
+        if (data.length > 0) {
+          const apiIds = new Set(data.map(e => e.id));
+          const uniqueStatic = staticEvents.filter(e => !apiIds.has(e.id));
+          setAllEvents([...data, ...uniqueStatic]);
+        }
+      })
+      .catch(() => {});
+
+    fetch('/api/projects')
+      .then(r => r.json())
+      .then((data: Project[]) => {
+        if (data.length > 0) {
+          const apiIds = new Set(data.map(p => p.id));
+          const uniqueStatic = staticProjects.filter(p => !apiIds.has(p.id));
+          setAllProjects([...data, ...uniqueStatic]);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  const now = new Date();
+  const upcoming = allEvents
+    .filter(e => new Date(e.date) > now)
+    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+
   return (
     <>
-      <HeroSection />
+      <HeroSection upcoming={upcoming} totalEvents={allEvents.length} />
       <ValuePropsSection />
-      <ChaptersSection />
+      <ChaptersSection allEvents={allEvents} allProjects={allProjects} />
       <EmailCapture />
       <ProjectsSection />
       <TestimonialsSection />
-      <CTASection />
+      <CTASection next={upcoming[0] || null} />
     </>
   );
 }
