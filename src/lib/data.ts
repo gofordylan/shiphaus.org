@@ -454,12 +454,20 @@ export function getChapter(id: string): Chapter | undefined {
   return chapters.find(c => c.id === id);
 }
 
+export function getEvent(id: string): Event | undefined {
+  return events.find(e => e.id === id);
+}
+
 export function getChapterEvents(chapterId: string): Event[] {
   return events.filter(e => e.chapterId === chapterId);
 }
 
 export function getChapterProjects(chapterId: string): Project[] {
   return projects.filter(p => p.chapterId === chapterId);
+}
+
+export function getProjectsByEvent(eventId: string): Project[] {
+  return projects.filter(p => p.eventId === eventId);
 }
 
 export function getUpcomingEvents(): Event[] {

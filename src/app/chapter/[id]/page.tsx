@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { SessionProvider, useSession, signIn, signOut } from 'next-auth/react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -18,6 +18,7 @@ import { Project, Event, EventStatus } from '@/types';
 
 function ChapterContent() {
   const params = useParams();
+  const router = useRouter();
   const chapterId = params.id as string;
   const chapter = getChapter(chapterId);
   const staticEvents = getChapterEvents(chapterId);
@@ -65,19 +66,32 @@ function ChapterContent() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const fetchData = useCallback(() => {
-    const t = Date.now();
-    fetch(`/api/projects?chapter=${chapterId}&t=${t}`)
-      .then(r => r.json())
-      .then((data: Project[]) => { if (data.length > 0) setProjects(data); })
-      .catch(() => {});
-    fetch(`/api/events?chapter=${chapterId}&t=${t}`)
-      .then(r => r.json())
-      .then((data: Event[]) => { if (data.length > 0) setEvents(data); })
-      .catch(() => {});
+  const loadData = useCallback(async (signal?: AbortSignal) => {
+    const opts = signal ? { signal } : {};
+    try {
+      const [projectsRes, eventsRes] = await Promise.all([
+        fetch(`/api/projects?chapter=${chapterId}&t=${Date.now()}`, opts),
+        fetch(`/api/events?chapter=${chapterId}&t=${Date.now()}`, opts),
+      ]);
+      const [projectsData, eventsData] = await Promise.all([
+        projectsRes.json() as Promise<Project[]>,
+        eventsRes.json() as Promise<Event[]>,
+      ]);
+      if (signal?.aborted) return;
+      if (projectsData.length > 0) setProjects(projectsData);
+      if (eventsData.length > 0) setEvents(eventsData);
+    } catch (err) {
+      if ((err as Error).name !== 'AbortError') {
+        // Silent fail; static data already shown
+      }
+    }
   }, [chapterId]);
 
-  useEffect(() => { fetchData(); }, [fetchData]);
+  useEffect(() => {
+    const controller = new AbortController();
+    loadData(controller.signal);
+    return () => controller.abort();
+  }, [loadData]);
 
   if (!chapter) {
     return (
@@ -164,7 +178,7 @@ function ChapterContent() {
     if (project) {
       setProjects(prev => [...prev, project]);
     }
-    fetchData();
+    loadData();
   }
 
   function toggleSubmissions(eventId: string) {
@@ -315,7 +329,13 @@ function ChapterContent() {
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: index * 0.05 }}
                 >
-                  <div className="bg-white rounded-2xl border border-[var(--border-subtle)] overflow-hidden">
+                  <div
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => router.push(`/chapter/${chapterId}/event/${event.id}`)}
+                    onKeyDown={(e) => e.key === 'Enter' && router.push(`/chapter/${chapterId}/event/${event.id}`)}
+                    className="bg-white rounded-2xl border border-[var(--border-subtle)] overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
+                  >
                     {/* Event image */}
                     {event.imageUrl && (
                       <div className="w-full h-48 overflow-hidden">
@@ -330,7 +350,8 @@ function ChapterContent() {
                     <div className="p-6">
                       {/* Editing mode */}
                       {editingEvent === event.id && showAdmin ? (
-                        <EventForm
+                        <div onClick={(e) => e.stopPropagation()}>
+                          <EventForm
                           initial={{
                             title: event.title,
                             date: event.date,
@@ -343,6 +364,7 @@ function ChapterContent() {
                           accentColor={accentColor}
                           submitLabel="Save"
                         />
+                        </div>
                       ) : (
                         <>
                           <div className="flex items-start justify-between gap-4 mb-4">
@@ -371,6 +393,7 @@ function ChapterContent() {
                                     href={event.lumaUrl}
                                     target="_blank"
                                     rel="noopener noreferrer"
+                                    onClick={(e) => e.stopPropagation()}
                                     className="inline-flex items-center gap-1.5 text-[var(--accent)] hover:underline"
                                   >
                                     <Link2 className="w-3.5 h-3.5" />
@@ -381,7 +404,7 @@ function ChapterContent() {
                             </div>
 
                             {/* Top-right actions */}
-                            <div className="flex items-center gap-1.5 shrink-0">
+                            <div className="flex items-center gap-1.5 shrink-0" onClick={(e) => e.stopPropagation()}>
                               {showAdmin && (
                                 <>
                                   {status === 'active' && (
@@ -450,7 +473,7 @@ function ChapterContent() {
                                   </div>
                                 ) : (
                                   <button
-                                    onClick={() => signIn('google', { callbackUrl: `/chapter/${chapterId}` })}
+                                    onClick={(e) => { e.stopPropagation(); signIn('google', { callbackUrl: `/chapter/${chapterId}` }); }}
                                     className="btn-primary text-sm !px-5 !py-2"
                                   >
                                     Submit a Project
@@ -462,7 +485,7 @@ function ChapterContent() {
 
                           {/* Projects section — visible to everyone */}
                           {(status === 'active' || displayProjects.length > 0) && (
-                            <div className="mt-4 pt-4 border-t border-[var(--border-subtle)]">
+                            <div className="mt-4 pt-4 border-t border-[var(--border-subtle)]" onClick={(e) => e.stopPropagation()}>
                               <button
                                 onClick={() => toggleSubmissions(event.id)}
                                 className="flex items-center gap-2 text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider hover:text-[var(--text-primary)] cursor-pointer transition-colors"
