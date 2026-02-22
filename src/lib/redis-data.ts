@@ -30,6 +30,7 @@ function serializeProject(project: Project): Record<string, string> {
     type: project.type || '',
     featured: project.featured ? '1' : '0',
     submittedBy: project.submittedBy || '',
+    screenshotUrl: project.screenshotUrl || '',
   };
 }
 
@@ -49,6 +50,7 @@ function deserializeProject(data: Record<string, unknown>): Project {
     type: data.type || undefined,
     featured: data.featured === '1' || data.featured === 1,
     submittedBy: data.submittedBy || data.approvedBy || undefined,
+    screenshotUrl: data.screenshotUrl || undefined,
   } as Project;
 }
 

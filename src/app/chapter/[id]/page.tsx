@@ -585,6 +585,13 @@ function ProjectRow({ project, onEdit, onDelete }: { project: Project; onEdit?: 
             )}
           </div>
         </div>
+        {project.screenshotUrl && (
+          <img
+            src={project.screenshotUrl}
+            alt={`${project.title} screenshot`}
+            className="w-20 h-14 rounded-lg object-cover border border-[var(--border-subtle)] shrink-0 mt-0.5"
+          />
+        )}
       </div>
     </div>
   );

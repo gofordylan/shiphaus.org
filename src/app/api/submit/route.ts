@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { title, description, deployedUrl, githubUrl, chapterId, eventId } = body;
+    const { title, description, deployedUrl, githubUrl, chapterId, eventId, screenshotUrl } = body;
     const builderName = session.user.name || session.user.email;
 
     // Validate required fields
@@ -62,6 +62,9 @@ export async function POST(request: NextRequest) {
     // Validate optional URLs
     if (githubUrl && !isValidUrl(githubUrl)) {
       return NextResponse.json({ error: 'Invalid source link URL.' }, { status: 400 });
+    }
+    if (screenshotUrl && !isValidUrl(screenshotUrl)) {
+      return NextResponse.json({ error: 'Invalid screenshot URL.' }, { status: 400 });
     }
 
     const project: Project = {
@@ -81,6 +84,7 @@ export async function POST(request: NextRequest) {
       type: 'other',
       featured: false,
       submittedBy: session.user.email,
+      screenshotUrl: screenshotUrl?.trim() || undefined,
     };
 
     await createProject(project);

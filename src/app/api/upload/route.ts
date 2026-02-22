@@ -7,11 +7,11 @@ const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 
 export async function POST(request: NextRequest) {
   const session = await auth();
-  const isAdmin = (session?.user as unknown as Record<string, unknown>)?.isAdmin === true;
-
-  if (!isAdmin) {
+  if (!session?.user?.email) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
+
+  const isAdmin = (session.user as unknown as Record<string, unknown>)?.isAdmin === true;
 
   const formData = await request.formData();
   const file = formData.get('file') as File | null;
@@ -28,7 +28,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'File must be under 5MB' }, { status: 400 });
   }
 
-  const blob = await put(`events/${Date.now()}-${file.name}`, file, {
+  const prefix = isAdmin ? 'events' : 'projects';
+  const blob = await put(`${prefix}/${Date.now()}-${file.name}`, file, {
     access: 'public',
   });
 
