@@ -315,6 +315,23 @@ function ChapterContent() {
                             <div className="flex items-center gap-1.5 shrink-0">
                               {showAdmin && (
                                 <>
+                                  {status === 'active' && (
+                                    myProject ? (
+                                      <button
+                                        onClick={() => setSubmitModal({ eventId: event.id, eventTitle: event.title, editProject: myProject })}
+                                        className="text-xs px-3 py-1.5 rounded-lg border border-[var(--border-strong)] text-[var(--text-secondary)] hover:bg-[var(--bg-secondary)] transition-colors cursor-pointer"
+                                      >
+                                        Edit Project
+                                      </button>
+                                    ) : (
+                                      <button
+                                        onClick={() => setSubmitModal({ eventId: event.id, eventTitle: event.title })}
+                                        className="btn-primary text-xs !px-3 !py-1.5"
+                                      >
+                                        Submit Project
+                                      </button>
+                                    )
+                                  )}
                                   <button
                                     onClick={() => toggleEventStatus(event.id, event.status)}
                                     className="text-xs px-3 py-1.5 rounded-lg border border-[var(--border-strong)] text-[var(--text-secondary)] hover:bg-[var(--bg-secondary)] transition-colors cursor-pointer"
