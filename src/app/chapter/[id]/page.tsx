@@ -13,6 +13,7 @@ import {
 import Link from 'next/link';
 import { getChapter, getChapterEvents, getChapterProjects, chapterColorMap } from '@/lib/data';
 import { SubmitProjectModal } from '@/components/SubmitProjectModal';
+import { buildCliPrompt } from '@/lib/cli-prompt';
 import { Project, Event, EventStatus } from '@/types';
 
 function ChapterContent() {
@@ -33,6 +34,24 @@ function ChapterContent() {
   const [showNewEvent, setShowNewEvent] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [expandedSubmissions, setExpandedSubmissions] = useState<Record<string, boolean>>({});
+  const [cliCopied, setCliCopied] = useState(false);
+
+  async function handleCopyCliPrompt(eventId: string) {
+    try {
+      const res = await fetch('/api/cli/token', { method: 'POST' });
+      if (!res.ok) throw new Error('Failed to generate token');
+      const { token } = await res.json();
+
+      const baseUrl = window.location.origin;
+      const prompt = buildCliPrompt({ token, chapterId, eventId, baseUrl });
+
+      await navigator.clipboard.writeText(prompt);
+      setCliCopied(true);
+      setTimeout(() => setCliCopied(false), 3000);
+    } catch (err) {
+      console.error('CLI prompt copy failed:', err);
+    }
+  }
 
   const fetchData = useCallback(() => {
     const t = Date.now();
@@ -360,12 +379,21 @@ function ChapterContent() {
                                         Edit Project
                                       </button>
                                     ) : (
-                                      <button
-                                        onClick={() => setSubmitModal({ eventId: event.id, eventTitle: event.title })}
-                                        className="btn-primary text-sm !px-5 !py-2"
-                                      >
-                                        Submit Project
-                                      </button>
+                                      <div className="flex items-center gap-2">
+                                        <button
+                                          onClick={() => setSubmitModal({ eventId: event.id, eventTitle: event.title })}
+                                          className="btn-primary text-sm !px-5 !py-2"
+                                        >
+                                          Submit Project
+                                        </button>
+                                        <button
+                                          onClick={() => handleCopyCliPrompt(event.id)}
+                                          className="text-sm px-4 py-2 rounded-lg border border-[var(--border-strong)] text-[var(--text-secondary)] hover:bg-[var(--bg-secondary)] transition-colors cursor-pointer"
+                                          title="Copy a prompt to paste into Claude Code"
+                                        >
+                                          {cliCopied ? 'Copied!' : 'Claude Code'}
+                                        </button>
+                                      </div>
                                     )}
                                   </div>
                                 ) : (
