@@ -28,7 +28,7 @@ async function isRateLimited(ip: string): Promise<boolean> {
 export async function POST(request: NextRequest) {
   try {
     const authHeader = request.headers.get('authorization');
-    const token = authHeader?.replace('Bearer ', '');
+    const token = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : null;
     if (!token) {
       return NextResponse.json({ error: 'Missing token.' }, { status: 401 });
     }

@@ -34,7 +34,7 @@ function ChapterContent() {
   const [showNewEvent, setShowNewEvent] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [expandedSubmissions, setExpandedSubmissions] = useState<Record<string, boolean>>({});
-  const [cliCopied, setCliCopied] = useState(false);
+  const [cliCopied, setCliCopied] = useState<string | null>(null);
 
   async function handleCopyCliPrompt(eventId: string) {
     try {
@@ -46,8 +46,8 @@ function ChapterContent() {
       const prompt = buildCliPrompt({ token, chapterId, eventId, baseUrl });
 
       await navigator.clipboard.writeText(prompt);
-      setCliCopied(true);
-      setTimeout(() => setCliCopied(false), 3000);
+      setCliCopied(eventId);
+      setTimeout(() => setCliCopied(null), 3000);
     } catch (err) {
       console.error('CLI prompt copy failed:', err);
     }
@@ -391,7 +391,7 @@ function ChapterContent() {
                                           className="text-sm px-4 py-2 rounded-lg border border-[var(--border-strong)] text-[var(--text-secondary)] hover:bg-[var(--bg-secondary)] transition-colors cursor-pointer"
                                           title="Copy a prompt to paste into Claude Code"
                                         >
-                                          {cliCopied ? 'Copied!' : 'Claude Code'}
+                                          {cliCopied === event.id ? 'Copied!' : 'Claude Code'}
                                         </button>
                                       </div>
                                     )}
