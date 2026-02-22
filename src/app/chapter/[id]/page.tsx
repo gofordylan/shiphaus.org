@@ -246,10 +246,9 @@ function ChapterContent() {
               ) : (
                 <button
                   onClick={() => signIn('google', { callbackUrl: `/chapter/${chapterId}` })}
-                  className="w-8 h-8 rounded-full bg-white border border-[var(--border-strong)] hover:border-[var(--accent)] transition-all cursor-pointer shrink-0 flex items-center justify-center"
-                  title="Sign in"
+                  className="text-sm px-4 py-1.5 rounded-lg border border-[var(--border-strong)] text-[var(--text-secondary)] hover:border-[var(--accent)] hover:text-[var(--accent)] transition-colors cursor-pointer"
                 >
-                  <LogIn className="w-3.5 h-3.5 text-[var(--text-muted)]" />
+                  Login
                 </button>
               )}
             </div>
