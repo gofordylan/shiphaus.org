@@ -2,13 +2,13 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams } from 'next/navigation';
-import { SessionProvider, useSession, signIn } from 'next-auth/react';
+import { SessionProvider, useSession, signIn, signOut } from 'next-auth/react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Calendar, MapPin, Layers, Plus,
   ExternalLink, Github, Settings, Check,
   Eye, ShieldCheck, Image as ImageIcon, Link2,
-  Trash2, ChevronDown, ChevronUp, Pencil,
+  Trash2, ChevronDown, ChevronUp, Pencil, LogOut, LogIn,
 } from 'lucide-react';
 import Link from 'next/link';
 import { getChapter, getChapterEvents, getChapterProjects, chapterColorMap } from '@/lib/data';
@@ -205,6 +205,27 @@ function ChapterContent() {
         </button>
       )}
 
+      {/* Auth button */}
+      <div className="fixed top-6 right-6 z-50">
+        {session ? (
+          <button
+            onClick={() => signOut({ callbackUrl: `/chapter/${chapterId}` })}
+            className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium border border-[var(--border-strong)] bg-white text-[var(--text-secondary)] hover:bg-[var(--bg-secondary)] transition-colors cursor-pointer shadow-sm"
+          >
+            <LogOut className="w-3.5 h-3.5" />
+            Sign out
+          </button>
+        ) : (
+          <button
+            onClick={() => signIn('google', { callbackUrl: `/chapter/${chapterId}` })}
+            className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium border border-[var(--border-strong)] bg-white text-[var(--text-secondary)] hover:bg-[var(--bg-secondary)] transition-colors cursor-pointer shadow-sm"
+          >
+            <LogIn className="w-3.5 h-3.5" />
+            Sign in
+          </button>
+        )}
+      </div>
+
       {/* Events Section */}
       <section className="pt-16 pb-16 bg-[var(--bg-secondary)]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -382,16 +403,18 @@ function ChapterContent() {
                                       <div className="flex items-center gap-2">
                                         <button
                                           onClick={() => setSubmitModal({ eventId: event.id, eventTitle: event.title })}
-                                          className="btn-primary text-sm !px-5 !py-2"
+                                          className="btn-primary text-sm !px-5 !py-2 flex flex-col items-center leading-tight"
                                         >
-                                          Submit Project
+                                          <span>Submit Project</span>
+                                          <span className="text-[10px] opacity-75 font-normal">manually</span>
                                         </button>
                                         <button
                                           onClick={() => handleCopyCliPrompt(event.id)}
-                                          className="text-sm px-4 py-2 rounded-lg border border-[var(--border-strong)] text-[var(--text-secondary)] hover:bg-[var(--bg-secondary)] transition-colors cursor-pointer"
+                                          className="text-sm px-4 py-2 rounded-lg border border-[var(--border-strong)] text-[var(--text-secondary)] hover:bg-[var(--bg-secondary)] transition-colors cursor-pointer flex flex-col items-center leading-tight"
                                           title="Copy a prompt to paste into Claude Code"
                                         >
-                                          {cliCopied === event.id ? 'Copied!' : 'Claude Code'}
+                                          <span>{cliCopied === event.id ? 'Copied!' : 'Claude Code'}</span>
+                                          <span className="text-[10px] text-[var(--text-muted)] font-normal">via agent</span>
                                         </button>
                                       </div>
                                     )}
