@@ -205,23 +205,28 @@ function ChapterContent() {
         </button>
       )}
 
-      {/* Auth button */}
+      {/* Auth avatar */}
       <div className="fixed top-6 right-6 z-50">
         {session ? (
           <button
             onClick={() => signOut({ callbackUrl: `/chapter/${chapterId}` })}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium border border-[var(--border-strong)] bg-white text-[var(--text-secondary)] hover:bg-[var(--bg-secondary)] transition-colors cursor-pointer shadow-sm"
+            className="w-8 h-8 rounded-full overflow-hidden border-2 border-transparent hover:border-[var(--accent)] transition-all cursor-pointer shadow-sm"
+            title="Sign out"
           >
-            <LogOut className="w-3.5 h-3.5" />
-            Sign out
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={session.user?.image || `https://api.dicebear.com/7.x/notionists/svg?seed=${encodeURIComponent(session.user?.name || '')}&backgroundColor=c0aede`}
+              alt=""
+              className="w-full h-full object-cover"
+            />
           </button>
         ) : (
           <button
             onClick={() => signIn('google', { callbackUrl: `/chapter/${chapterId}` })}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium border border-[var(--border-strong)] bg-white text-[var(--text-secondary)] hover:bg-[var(--bg-secondary)] transition-colors cursor-pointer shadow-sm"
+            className="w-8 h-8 rounded-full bg-[var(--bg-secondary)] border border-[var(--border-strong)] hover:border-[var(--accent)] transition-all cursor-pointer shadow-sm flex items-center justify-center"
+            title="Sign in"
           >
-            <LogIn className="w-3.5 h-3.5" />
-            Sign in
+            <LogIn className="w-3.5 h-3.5 text-[var(--text-muted)]" />
           </button>
         )}
       </div>
