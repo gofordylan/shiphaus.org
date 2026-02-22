@@ -22,13 +22,14 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     }
 
     const body = await request.json();
-    const { title, description, deployedUrl, githubUrl } = body;
+    const { title, description, deployedUrl, githubUrl, screenshotUrl } = body;
 
     await updateProject(id, {
       ...(title !== undefined && { title }),
       ...(description !== undefined && { description }),
       ...(deployedUrl !== undefined && { deployedUrl }),
       ...(githubUrl !== undefined && { githubUrl }),
+      ...(screenshotUrl !== undefined && { screenshotUrl }),
     });
 
     const updated = await getProjectById(id);

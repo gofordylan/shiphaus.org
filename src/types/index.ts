@@ -55,6 +55,7 @@ export interface Project {
   type?: ProjectType;
   featured?: boolean;
   submittedBy?: string;
+  screenshotUrl?: string;
 }
 
 export interface Testimonial {

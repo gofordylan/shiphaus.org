@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, FormEvent } from 'react';
+import { useState, useRef, FormEvent } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X } from 'lucide-react';
+import { X, ImageIcon } from 'lucide-react';
 import { Project } from '@/types';
 
 interface SubmitProjectModalProps {
@@ -20,8 +20,31 @@ export function SubmitProjectModal({ eventId, eventName, chapterId, initialData,
   const [description, setDescription] = useState(initialData?.description || '');
   const [deployedUrl, setDeployedUrl] = useState(initialData?.deployedUrl || '');
   const [githubUrl, setGithubUrl] = useState(initialData?.githubUrl || '');
+  const [screenshotUrl, setScreenshotUrl] = useState(initialData?.screenshotUrl || '');
+  const [uploading, setUploading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  async function handleScreenshotUpload(file: File) {
+    setUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      const res = await fetch('/api/upload', { method: 'POST', body: formData });
+      if (res.ok) {
+        const { url } = await res.json();
+        setScreenshotUrl(url);
+      } else {
+        const data = await res.json();
+        setError(data.error || 'Upload failed.');
+      }
+    } catch {
+      setError('Upload failed. Try again.');
+    } finally {
+      setUploading(false);
+    }
+  }
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -38,6 +61,7 @@ export function SubmitProjectModal({ eventId, eventName, chapterId, initialData,
             description,
             deployedUrl,
             githubUrl: githubUrl || undefined,
+            screenshotUrl: screenshotUrl || undefined,
           }),
         });
 
@@ -56,6 +80,7 @@ export function SubmitProjectModal({ eventId, eventName, chapterId, initialData,
             description,
             deployedUrl,
             githubUrl: githubUrl || undefined,
+            screenshotUrl: screenshotUrl || undefined,
             chapterId,
             eventId,
           }),
@@ -159,6 +184,45 @@ export function SubmitProjectModal({ eventId, eventName, chapterId, initialData,
                 placeholder="https://github.com/..."
                 className="w-full px-4 py-2.5 rounded-lg border border-[var(--border-strong)] bg-[var(--bg-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] font-body text-sm"
               />
+            </div>
+
+            {/* Screenshot upload */}
+            <div>
+              <label className="block text-sm font-semibold mb-1.5">
+                Screenshot <span className="font-normal text-[var(--text-muted)]">(optional)</span>
+              </label>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                className="hidden"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) handleScreenshotUpload(file);
+                }}
+              />
+              {screenshotUrl ? (
+                <div className="relative rounded-xl overflow-hidden border border-[var(--border-subtle)]">
+                  <img src={screenshotUrl} alt="Screenshot preview" className="w-full h-40 object-cover" />
+                  <button
+                    type="button"
+                    onClick={() => setScreenshotUrl('')}
+                    className="absolute top-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded-lg hover:bg-black/80 transition-colors cursor-pointer"
+                  >
+                    Remove
+                  </button>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={uploading}
+                  className="w-full flex flex-col items-center justify-center gap-1.5 py-6 rounded-xl border-2 border-dashed border-[var(--border-strong)] text-[var(--text-muted)] hover:border-[var(--accent)] hover:text-[var(--accent)] transition-colors cursor-pointer disabled:opacity-50"
+                >
+                  <ImageIcon className="w-5 h-5" />
+                  <span className="text-sm">{uploading ? 'Uploading...' : 'Add a screenshot'}</span>
+                </button>
+              )}
             </div>
 
             {error && (
