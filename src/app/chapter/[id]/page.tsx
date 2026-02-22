@@ -35,6 +35,8 @@ function ChapterContent() {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [expandedSubmissions, setExpandedSubmissions] = useState<Record<string, boolean>>({});
   const [cliCopied, setCliCopied] = useState<string | null>(null);
+  const [showUserMenu, setShowUserMenu] = useState(false);
+  const userMenuRef = useRef<HTMLDivElement>(null);
 
   async function handleCopyCliPrompt(eventId: string) {
     try {
@@ -52,6 +54,16 @@ function ChapterContent() {
       console.error('CLI prompt copy failed:', err);
     }
   }
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
+        setShowUserMenu(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const fetchData = useCallback(() => {
     const t = Date.now();
@@ -231,18 +243,33 @@ function ChapterContent() {
                 </button>
               )}
               {session ? (
-                <button
-                  onClick={() => signOut({ callbackUrl: `/chapter/${chapterId}` })}
-                  className="w-8 h-8 rounded-full overflow-hidden border-2 border-transparent hover:border-[var(--accent)] transition-all cursor-pointer shrink-0"
-                  title="Sign out"
-                >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={session.user?.image || `https://api.dicebear.com/7.x/notionists/svg?seed=${encodeURIComponent(session.user?.name || '')}&backgroundColor=c0aede`}
-                    alt=""
-                    className="w-full h-full object-cover"
-                  />
-                </button>
+                <div className="relative" ref={userMenuRef}>
+                  <button
+                    onClick={() => setShowUserMenu(v => !v)}
+                    className="w-8 h-8 rounded-full overflow-hidden border-2 border-transparent hover:border-[var(--accent)] transition-all cursor-pointer shrink-0"
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={session.user?.image || `https://api.dicebear.com/7.x/notionists/svg?seed=${encodeURIComponent(session.user?.name || '')}&backgroundColor=c0aede`}
+                      alt=""
+                      className="w-full h-full object-cover"
+                    />
+                  </button>
+                  {showUserMenu && (
+                    <div className="absolute right-0 top-10 bg-white rounded-xl border border-[var(--border-subtle)] shadow-lg py-1 min-w-[140px] z-50">
+                      <div className="px-3 py-2 border-b border-[var(--border-subtle)]">
+                        <p className="text-xs font-medium text-[var(--text-primary)] truncate">{session.user?.name}</p>
+                      </div>
+                      <button
+                        onClick={() => signOut({ callbackUrl: `/chapter/${chapterId}` })}
+                        className="w-full text-left px-3 py-2 text-sm text-[var(--text-secondary)] hover:bg-[var(--bg-secondary)] transition-colors cursor-pointer flex items-center gap-2"
+                      >
+                        <LogOut className="w-3.5 h-3.5" />
+                        Sign out
+                      </button>
+                    </div>
+                  )}
+                </div>
               ) : (
                 <button
                   onClick={() => signIn('google', { callbackUrl: `/chapter/${chapterId}` })}
