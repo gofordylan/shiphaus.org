@@ -205,32 +205,6 @@ function ChapterContent() {
         </button>
       )}
 
-      {/* Auth avatar */}
-      <div className="fixed top-6 right-6 z-50">
-        {session ? (
-          <button
-            onClick={() => signOut({ callbackUrl: `/chapter/${chapterId}` })}
-            className="w-8 h-8 rounded-full overflow-hidden border-2 border-transparent hover:border-[var(--accent)] transition-all cursor-pointer shadow-sm"
-            title="Sign out"
-          >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={session.user?.image || `https://api.dicebear.com/7.x/notionists/svg?seed=${encodeURIComponent(session.user?.name || '')}&backgroundColor=c0aede`}
-              alt=""
-              className="w-full h-full object-cover"
-            />
-          </button>
-        ) : (
-          <button
-            onClick={() => signIn('google', { callbackUrl: `/chapter/${chapterId}` })}
-            className="w-8 h-8 rounded-full bg-[var(--bg-secondary)] border border-[var(--border-strong)] hover:border-[var(--accent)] transition-all cursor-pointer shadow-sm flex items-center justify-center"
-            title="Sign in"
-          >
-            <LogIn className="w-3.5 h-3.5 text-[var(--text-muted)]" />
-          </button>
-        )}
-      </div>
-
       {/* Events Section */}
       <section className="pt-16 pb-16 bg-[var(--bg-secondary)]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -246,15 +220,39 @@ function ChapterContent() {
               </p>
             </motion.div>
 
-            {showAdmin && (
-              <button
-                onClick={() => setShowNewEvent(true)}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-[var(--accent)] border border-[var(--accent)] hover:bg-[var(--accent)] hover:text-white transition-colors cursor-pointer"
-              >
-                <Plus className="w-4 h-4" />
-                New Event
-              </button>
-            )}
+            <div className="flex items-center gap-3">
+              {showAdmin && (
+                <button
+                  onClick={() => setShowNewEvent(true)}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-[var(--accent)] border border-[var(--accent)] hover:bg-[var(--accent)] hover:text-white transition-colors cursor-pointer"
+                >
+                  <Plus className="w-4 h-4" />
+                  New Event
+                </button>
+              )}
+              {session ? (
+                <button
+                  onClick={() => signOut({ callbackUrl: `/chapter/${chapterId}` })}
+                  className="w-8 h-8 rounded-full overflow-hidden border-2 border-transparent hover:border-[var(--accent)] transition-all cursor-pointer shrink-0"
+                  title="Sign out"
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={session.user?.image || `https://api.dicebear.com/7.x/notionists/svg?seed=${encodeURIComponent(session.user?.name || '')}&backgroundColor=c0aede`}
+                    alt=""
+                    className="w-full h-full object-cover"
+                  />
+                </button>
+              ) : (
+                <button
+                  onClick={() => signIn('google', { callbackUrl: `/chapter/${chapterId}` })}
+                  className="w-8 h-8 rounded-full bg-white border border-[var(--border-strong)] hover:border-[var(--accent)] transition-all cursor-pointer shrink-0 flex items-center justify-center"
+                  title="Sign in"
+                >
+                  <LogIn className="w-3.5 h-3.5 text-[var(--text-muted)]" />
+                </button>
+              )}
+            </div>
           </div>
 
           {/* New Event Form */}
